@@ -850,7 +850,7 @@ namespace TWAIN
 			memset(&tw_capability, 0, sizeof(TW_CAPABILITY));
 			
 			tw_capability.Cap = cap;
-			tw_capability.ConType = 0;
+			tw_capability.ConType = TWON_ONEVALUE;
 			tw_capability.hContainer = 0;
 			
 			if(TWRC_SUCCESS == DSM_Entry(
@@ -861,7 +861,7 @@ namespace TWAIN
 																	 MSG_GET,
 																	 (TW_MEMREF)&tw_capability))
 			{
-				void *p = DSM::Lock(tw_capability.hContainer);
+				pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
 				getCapabilityValueString(&tw_capability, p, returnValue);
 				DSM::Unlock(tw_capability.hContainer);
 				DSM::Free(tw_capability.hContainer);
@@ -879,9 +879,9 @@ namespace TWAIN
 			memset(&tw_capability, 0, sizeof(TW_CAPABILITY));
 			
 			tw_capability.Cap = cap;
-			tw_capability.ConType = 0;
+			tw_capability.ConType = TWON_ONEVALUE;
 			tw_capability.hContainer = 0;
-			
+
 			if(TWRC_SUCCESS == DSM_Entry(
 																	 &DSM::tw_identity,
 																	 &DSM::tw_source,
@@ -890,38 +890,20 @@ namespace TWAIN
 																	 MSG_GET,
 																	 (TW_MEMREF)&tw_capability))
 			{
-				//buffer holding string representation
-				char str[CAP_VALUE_BUF_SIZE];
-				memset(str, 0, sizeof(str));
-				CUTF8String u8value;
-				Param3.copyUTF8String(&u8value);
-				memcpy(str, u8value.c_str(), u8value.length());
-
-				TW_UINT16 itemType = 0;
-				switch(tw_capability.ConType)
-				{
-					case TWON_ARRAY:
-						itemType = ((pTW_ARRAY)tw_capability.hContainer)->ItemType;
-						break;
-					case TWON_ENUMERATION:
-						itemType = ((pTW_ENUMERATION)tw_capability.hContainer)->ItemType;
-						break;
-					case TWON_ONEVALUE:
-						itemType = ((pTW_ONEVALUE)tw_capability.hContainer)->ItemType;
-						break;
-					case TWON_RANGE:
-						itemType = ((pTW_RANGE)tw_capability.hContainer)->ItemType;
-						break;
-				}
-				
-				//always use TW_ONEVALUE container to set
-				tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
-				tw_capability.ConType = TWON_ONEVALUE;
-				
+				//get itemType from old handle
 				pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
+				TW_UINT16 itemType = ((pTW_ONEVALUE)tw_capability.hContainer)->ItemType;
+				DSM::Unlock(tw_capability.hContainer);
+				DSM::Free(tw_capability.hContainer);
+
+				//new handle (container)
+				tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
+				p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
+				
+				//set itemType to new handle
 				p->ItemType = itemType;
 				
-				setCapabilityValueString(&tw_capability, p, str);
+				setCapabilityValueString(&tw_capability, p, Param3);
 				
 				if(TWRC_SUCCESS == DSM_Entry(
 																		 &DSM::tw_identity,
@@ -1011,7 +993,6 @@ namespace TWAIN
 					case TWON_ARRAY:
 					{
 						pTW_ARRAY p = (pTW_ARRAY)DSM::Lock(tw_capability.hContainer);
-						getCapabilityValueString(&tw_capability, p, returnValue);
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						for (int i = 0; i < p->NumItems;++i)
 						{
@@ -1106,7 +1087,6 @@ namespace TWAIN
 					case TWON_ENUMERATION:
 					{
 						pTW_ENUMERATION p = (pTW_ENUMERATION)DSM::Lock(tw_capability.hContainer);
-						getCapabilityValueString(&tw_capability, p, returnValue);
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						for (int i = 0; i < p->NumItems;++i)
 						{
@@ -1201,7 +1181,6 @@ namespace TWAIN
 					case TWON_RANGE:
 					{
 						pTW_RANGE p = (pTW_RANGE)DSM::Lock(tw_capability.hContainer);
-						getCapabilityValueString(&tw_capability, p, returnValue);
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						json_set_i(json_scanner_option, L"MinValue", p->MinValue);
 						json_set_i(json_scanner_option, L"MaxValue", p->MaxValue);
@@ -1215,7 +1194,6 @@ namespace TWAIN
 					case TWON_ONEVALUE:
 					{
 						pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
-						getCapabilityValueString(&tw_capability, p, returnValue);
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						DSM::Unlock(tw_capability.hContainer);
 						DSM::Free(tw_capability.hContainer);
@@ -1224,7 +1202,23 @@ namespace TWAIN
 				}
 			}
 			
-			Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
+			tw_capability.ConType = TWON_ONEVALUE;
+			tw_capability.hContainer = 0;
+			
+			if(TWRC_SUCCESS == DSM_Entry(
+																	 &DSM::tw_identity,
+																	 &DSM::tw_source,
+																	 DG_CONTROL,
+																	 DAT_CAPABILITY,
+																	 MSG_GET,
+																	 (TW_MEMREF)&tw_capability))
+			{
+				pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
+				getCapabilityValueString(&tw_capability, p, returnValue);
+				DSM::Unlock(tw_capability.hContainer);
+				DSM::Free(tw_capability.hContainer);
+			}
+				Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 			json_push_back(json_scanner_options, json_scanner_option);
 		}
 	}
