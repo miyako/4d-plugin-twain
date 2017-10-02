@@ -879,7 +879,7 @@ namespace TWAIN
 			memset(&tw_capability, 0, sizeof(TW_CAPABILITY));
 			
 			tw_capability.Cap = cap;
-			tw_capability.ConType = TWON_ONEVALUE;
+			tw_capability.ConType = 0;
 			tw_capability.hContainer = 0;
 
 			if(TWRC_SUCCESS == DSM_Entry(
@@ -890,15 +890,33 @@ namespace TWAIN
 																	 MSG_GET,
 																	 (TW_MEMREF)&tw_capability))
 			{
+				TW_UINT16 itemType;
+				
 				//get itemType from old handle
-				pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
-				TW_UINT16 itemType = ((pTW_ONEVALUE)tw_capability.hContainer)->ItemType;
+				void *_p = DSM::Lock(tw_capability.hContainer);
+				switch(tw_capability.ConType)
+				{
+					case TWON_ARRAY:
+						itemType = ((pTW_ARRAY)_p)->ItemType;
+						break;
+					case TWON_ENUMERATION:
+						itemType = ((pTW_ENUMERATION)_p)->ItemType;
+						break;
+					case TWON_ONEVALUE:
+						itemType = ((pTW_ONEVALUE)_p)->ItemType;
+						break;
+					case TWON_RANGE:
+						itemType = ((pTW_RANGE)_p)->ItemType;
+						break;
+				}
 				DSM::Unlock(tw_capability.hContainer);
 				DSM::Free(tw_capability.hContainer);
 
 				//new handle (container)
 				tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
-				p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
+				tw_capability.ConType = TWON_ONEVALUE;
+				
+				pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
 				
 				//set itemType to new handle
 				p->ItemType = itemType;
