@@ -1002,13 +1002,6 @@ namespace TWAIN
 																	 MSG_GET,
 																	 (TW_MEMREF)&tw_capability))
 			{
-//				void *p = DSM::Lock(tw_capability.hContainer);
-//				C_TEXT returnValue;
-//				getCapabilityValueString(&tw_capability, p, returnValue);
-//				Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
-//				DSM::Unlock(tw_capability.hContainer);
-//				DSM::Free(tw_capability.hContainer);
-				
 				//options
 				char str[CAP_VALUE_BUF_SIZE];
 				JSONNODE *json_scanner_option_values = json_new(JSON_ARRAY);
@@ -1019,6 +1012,9 @@ namespace TWAIN
 					case TWON_ARRAY:
 					{
 						pTW_ARRAY p = (pTW_ARRAY)DSM::Lock(tw_capability.hContainer);
+						C_TEXT returnValue;
+						getCapabilityValueString(&tw_capability, p, returnValue);
+						Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						for (int i = 0; i < p->NumItems;++i)
 						{
@@ -1113,6 +1109,9 @@ namespace TWAIN
 					case TWON_ENUMERATION:
 					{
 						pTW_ENUMERATION p = (pTW_ENUMERATION)DSM::Lock(tw_capability.hContainer);
+						C_TEXT returnValue;
+						getCapabilityValueString(&tw_capability, p, returnValue);
+						Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						for (int i = 0; i < p->NumItems;++i)
 						{
@@ -1207,6 +1206,9 @@ namespace TWAIN
 					case TWON_RANGE:
 					{
 						pTW_RANGE p = (pTW_RANGE)DSM::Lock(tw_capability.hContainer);
+						C_TEXT returnValue;
+						getCapabilityValueString(&tw_capability, p, returnValue);
+						Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						json_set_i(json_scanner_option, L"MinValue", p->MinValue);
 						json_set_i(json_scanner_option, L"MaxValue", p->MaxValue);
@@ -1220,6 +1222,9 @@ namespace TWAIN
 					case TWON_ONEVALUE:
 					{
 						pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
+						C_TEXT returnValue;
+						getCapabilityValueString(&tw_capability, p, returnValue);
+						Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						DSM::Unlock(tw_capability.hContainer);
 						DSM::Free(tw_capability.hContainer);
