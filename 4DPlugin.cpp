@@ -891,57 +891,52 @@ namespace TWAIN
 																	 (TW_MEMREF)&tw_capability))
 			{
 				//container size
-				TW_UINT32 conSize = 0;
+
+				char str[CAP_VALUE_BUF_SIZE];
+				memset(str, 0, sizeof(str));
+				
+				CUTF8String u8value;
+				Param3.copyUTF8String(&u8value);
+				memcpy(str, u8value.c_str(), u8value.length());
+				
+				TW_UINT16 itemType = TWTY_INT8;
+				
 				switch(tw_capability.ConType)
 				{
 					case TWON_ARRAY:
-						conSize = sizeof(TW_ARRAY);
+						itemType = ((pTW_ARRAY)tw_capability.hContainer)->ItemType;
 						break;
 					case TWON_ENUMERATION:
-						conSize = sizeof(TW_ENUMERATION);
+						itemType = ((pTW_ENUMERATION)tw_capability.hContainer)->ItemType;
 						break;
 					case TWON_ONEVALUE:
-						conSize = sizeof(TW_ONEVALUE);
+						itemType = ((pTW_ONEVALUE)tw_capability.hContainer)->ItemType;
 						break;
 					case TWON_RANGE:
-						conSize = sizeof(TW_RANGE);
+						itemType = ((pTW_RANGE)tw_capability.hContainer)->ItemType;
 						break;
 				}
 				
-				if(conSize)
-				{
-					char str[CAP_VALUE_BUF_SIZE];
-					memset(str, 0, sizeof(str));
+				//always ONEVALUE container
+				tw_capability.ConType = TWON_ONEVALUE;
+				tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
+				void *p = DSM::Lock(tw_capability.hContainer);
 					
-					CUTF8String u8value;
-					Param3.copyUTF8String(&u8value);
-					memcpy(str, u8value.c_str(), u8value.length());
-	
-					TW_HANDLE new_handle = DSM::Alloc(conSize);
-					TW_HANDLE old_handle = tw_capability.hContainer;
-					
-					void *p = DSM::Lock(new_handle);
-					void *h = DSM::Lock(old_handle);
-					memcpy(p, h, conSize);
-					DSM::Unlock(old_handle);
-					
-					tw_capability.hContainer = new_handle;
-					
-					setCapabilityValueString(&tw_capability, p, Param3, str);
-					if(TWRC_SUCCESS == DSM_Entry(
-																			 &DSM::tw_identity,
-																			 &DSM::tw_source,
-																			 DG_CONTROL,
-																			 DAT_CAPABILITY,
-																			 MSG_SET,
-																			 (TW_MEMREF)&tw_capability))
-					{
-						
-					}
-					DSM::Unlock(tw_capability.hContainer);
-					DSM::Free(tw_capability.hContainer);
-				}
+				setCapabilityValueString(&tw_capability, p, Param3, str, itemType);
 				
+				if(TWRC_SUCCESS == DSM_Entry(
+																		 &DSM::tw_identity,
+																		 &DSM::tw_source,
+																		 DG_CONTROL,
+																		 DAT_CAPABILITY,
+																		 MSG_SET,
+																		 (TW_MEMREF)&tw_capability))
+				{
+					
+				}
+				DSM::Unlock(tw_capability.hContainer);
+				DSM::Free(tw_capability.hContainer);
+
 			}
 		
 		}

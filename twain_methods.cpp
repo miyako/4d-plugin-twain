@@ -1,15 +1,15 @@
 #include "twain_methods.h"
 
-void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Param3, char *str)
+void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Param3, char *str, TW_UINT16 itemType)
 {
 
 	TW_UINT16 cap = tw_capability->Cap;
 	TW_UINT16 conType = tw_capability->ConType;
 	
 //	pTW_ARRAY pARRAY = (pTW_ARRAY)p;
-	pTW_ENUMERATION pENUMERATION = (pTW_ENUMERATION)p;
+//	pTW_ENUMERATION pENUMERATION = (pTW_ENUMERATION)p;
 	pTW_ONEVALUE pONEVALUE = (pTW_ONEVALUE)p;
-	pTW_RANGE pRANGE = (pTW_RANGE)p;
+//	pTW_RANGE pRANGE = (pTW_RANGE)p;
 	
 	int i_value = atoi(str);
 	std::string option= str;
@@ -1430,7 +1430,7 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Par
 			//no set for array
 			break;
 		case TWON_ENUMERATION:
-			switch(pENUMERATION->ItemType)
+			switch(itemType)
 		{
 			case TWTY_FIX32:
 			{
@@ -1438,7 +1438,7 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Par
 				TW_INT32 value = (TW_INT32) (f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
 				tw_fix32.Whole = (TW_UINT16)(value >> 16);
 				tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
-				memcpy((void *)&pENUMERATION->CurrentIndex, (const void *)&tw_fix32, sizeof(TW_FIX32));
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_fix32, sizeof(TW_FIX32));
 			}
 				break;
 			case TWTY_FRAME:
@@ -1449,42 +1449,42 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Par
 			case TWTY_INT8:
 			{
 				TW_INT8 tw_int8 = (TW_INT8)i_value;
-				memcpy((void *)&pENUMERATION->CurrentIndex, (const void *)&tw_int8, sizeof(TW_INT8));
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int8, sizeof(TW_INT8));
 			}
 				break;
 			case TWTY_INT16:
 			{
 				TW_INT16 tw_int16 = (TW_INT16)i_value;
-				memcpy((void *)&pENUMERATION->CurrentIndex, (const void *)&tw_int16, sizeof(TW_INT16));
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int16, sizeof(TW_INT16));
 			}
 				break;
 			case TWTY_INT32:
 			{
 				TW_INT32 tw_int32 = (TW_INT32)i_value;
-				memcpy((void *)&pENUMERATION->CurrentIndex, (const void *)&tw_int32, sizeof(TW_INT32));
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int32, sizeof(TW_INT32));
 			}
 				break;
 			case TWTY_UINT8:
 			{
 				TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
-				memcpy((void *)&pENUMERATION->CurrentIndex, (const void *)&tw_uint8, sizeof(TW_UINT8));
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint8, sizeof(TW_UINT8));
 			}
 				break;
 			case TWTY_UINT16:
 			{
 				TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
-				memcpy((void *)&pENUMERATION->CurrentIndex, (const void *)&tw_uint16, sizeof(TW_UINT16));
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint16, sizeof(TW_UINT16));
 			}
 				break;
 			case TWTY_UINT32:
 			{
 				TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
-				memcpy((void *)&pENUMERATION->CurrentIndex, (const void *)&tw_uint32, sizeof(TW_UINT32));
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
 			}
 				break;
 			case TWTY_BOOL:
 			{
-				memcpy((void *)&pENUMERATION->CurrentIndex, (const void *)&tw_bool, sizeof(TW_BOOL));
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_bool, sizeof(TW_BOOL));
 			}
 				break;
 			case TWTY_STR32:
@@ -1503,7 +1503,7 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Par
 		}
 			break;
 		case TWON_ONEVALUE:
-			switch(pONEVALUE->ItemType)
+			switch(itemType)
 		{
 			case TWTY_FIX32:
 			{
@@ -1578,7 +1578,7 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Par
 		case TWON_RANGE:
 		{
 			TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
-			memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint32, sizeof(TW_UINT32));
+			memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
 		}
 			break;
 	}
