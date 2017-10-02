@@ -1,37 +1,28 @@
 #include "twain_methods.h"
 
-void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Param3, char *str, TW_UINT16 itemType)
+void setCapabilityValueString(TW_UINT16 cap, pTW_ONEVALUE p, char *str)
 {
-
-	TW_UINT16 cap = tw_capability->Cap;
-	TW_UINT16 conType = tw_capability->ConType;
-	
-//	pTW_ARRAY pARRAY = (pTW_ARRAY)p;
-//	pTW_ENUMERATION pENUMERATION = (pTW_ENUMERATION)p;
-	pTW_ONEVALUE pONEVALUE = (pTW_ONEVALUE)p;
-//	pTW_RANGE pRANGE = (pTW_RANGE)p;
-	
 	int i_value = atoi(str);
-	std::string option= str;
+	std::string option = str;
 	
 	TW_BOOL tw_bool = FALSE;
 	
-	if((Param3.getUTF16Length() == 4) && (0 == strncmp("true", str, 4)))
+	if((option.length() == 4) && (0 == strncmp("true", str, 4)))
 		tw_bool = TRUE;
 	
-	if((Param3.getUTF16Length() == 4) && (0 == strncmp("vrai", str, 4)))
+	if((option.length() == 4) && (0 == strncmp("vrai", str, 4)))
 		tw_bool = TRUE;
 	
-	if((Param3.getUTF16Length() == 1) && (0 == strncmp("1", str, 1)))
+	if((option.length() == 1) && (0 == strncmp("1", str, 1)))
 		tw_bool = TRUE;
 	
-	if((Param3.getUTF16Length() == 5) && (0 == strncmp("false", str, 5)))
+	if((option.length() == 5) && (0 == strncmp("false", str, 5)))
 		tw_bool = FALSE;
 
-	if((Param3.getUTF16Length() == 4) && (0 == strncmp("faux", str, 4)))
+	if((option.length()== 4) && (0 == strncmp("faux", str, 4)))
 		tw_bool = FALSE;
 	
-	if((Param3.getUTF16Length() == 1) && (0 == strncmp("0", str, 1)))
+	if((option.length() == 1) && (0 == strncmp("0", str, 1)))
 		tw_bool = FALSE;
 	
 //TW_FRAME tw_frame;
@@ -1424,165 +1415,78 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Par
 			break;
 	}
 	
-	switch(conType)
+	switch(p->ItemType)
 	{
-		case TWON_ARRAY:
-			//no set for array
-			break;
-		case TWON_ENUMERATION:
-			switch(itemType)
+		case TWTY_FIX32:
 		{
-			case TWTY_FIX32:
-			{
-				double f_value = atof(str);
-				TW_INT32 value = (TW_INT32) (f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
-				tw_fix32.Whole = (TW_UINT16)(value >> 16);
-				tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_fix32, sizeof(TW_FIX32));
-			}
-				break;
-			case TWTY_FRAME:
-			{
-				
-			}
-				break;
-			case TWTY_INT8:
-			{
-				TW_INT8 tw_int8 = (TW_INT8)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int8, sizeof(TW_INT8));
-			}
-				break;
-			case TWTY_INT16:
-			{
-				TW_INT16 tw_int16 = (TW_INT16)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int16, sizeof(TW_INT16));
-			}
-				break;
-			case TWTY_INT32:
-			{
-				TW_INT32 tw_int32 = (TW_INT32)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int32, sizeof(TW_INT32));
-			}
-				break;
-			case TWTY_UINT8:
-			{
-				TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint8, sizeof(TW_UINT8));
-			}
-				break;
-			case TWTY_UINT16:
-			{
-				TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint16, sizeof(TW_UINT16));
-			}
-				break;
-			case TWTY_UINT32:
-			{
-				TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
-			}
-				break;
-			case TWTY_BOOL:
-			{
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_bool, sizeof(TW_BOOL));
-			}
-				break;
-			case TWTY_STR32:
-			case TWTY_STR64:
-			case TWTY_STR128:
-			case TWTY_STR255:
-			{
-				
-			}
-				break;
-				//					case TWTY_STR1024:
-				//					case TWTY_UNI512:
-				//						break;
-			default:
-				break;
+			double f_value = atof(str);
+			TW_INT32 value = (TW_INT32) (f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
+			tw_fix32.Whole = (TW_UINT16)(value >> 16);
+			tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
+			memcpy((void *)&p->Item, (const void *)&tw_fix32, sizeof(TW_FIX32));
 		}
 			break;
-		case TWON_ONEVALUE:
-			switch(itemType)
+		case TWTY_FRAME:
 		{
-			case TWTY_FIX32:
-			{
-				double f_value = atof(str);
-				TW_INT32 value = (TW_INT32) (f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
-				tw_fix32.Whole = (TW_UINT16)(value >> 16);
-				tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_fix32, sizeof(TW_FIX32));
-			}
-				break;
-			case TWTY_FRAME:
-			{
-				
-			}
-				break;
-			case TWTY_INT8:
-			{
-				TW_INT8 tw_int8 = (TW_INT8)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int8, sizeof(TW_INT8));
-			}
-				break;
-			case TWTY_INT16:
-			{
-				TW_INT16 tw_int16 = (TW_INT16)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int16, sizeof(TW_INT16));
-			}
-				break;
-			case TWTY_INT32:
-			{
-				TW_INT32 tw_int32 = (TW_INT32)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int32, sizeof(TW_INT32));
-			}
-				break;
-			case TWTY_UINT8:
-			{
-				TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint8, sizeof(TW_UINT8));
-			}
-				break;
-			case TWTY_UINT16:
-			{
-				TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint16, sizeof(TW_UINT16));
-			}
-				break;
-			case TWTY_UINT32:
-			{
-				TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
-			}
-				break;
-			case TWTY_BOOL:
-			{
-				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_bool, sizeof(TW_BOOL));
-			}
-				break;
-			case TWTY_STR32:
-			case TWTY_STR64:
-			case TWTY_STR128:
-			case TWTY_STR255:
-			{
-				
-			}
-				break;
-				//					case TWTY_STR1024:
-				//					case TWTY_UNI512:
-				//						break;
-			default:
-				break;
+			
 		}
 			break;
-		case TWON_RANGE:
+		case TWTY_INT8:
+		{
+			TW_INT8 tw_int8 = (TW_INT8)i_value;
+			memcpy((void *)&p->Item, (const void *)&tw_int8, sizeof(TW_INT8));
+		}
+			break;
+		case TWTY_INT16:
+		{
+			TW_INT16 tw_int16 = (TW_INT16)i_value;
+			memcpy((void *)&p->Item, (const void *)&tw_int16, sizeof(TW_INT16));
+		}
+			break;
+		case TWTY_INT32:
+		{
+			TW_INT32 tw_int32 = (TW_INT32)i_value;
+			memcpy((void *)&p->Item, (const void *)&tw_int32, sizeof(TW_INT32));
+		}
+			break;
+		case TWTY_UINT8:
+		{
+			TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
+			memcpy((void *)&p->Item, (const void *)&tw_uint8, sizeof(TW_UINT8));
+		}
+			break;
+		case TWTY_UINT16:
+		{
+			TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
+			memcpy((void *)&p->Item, (const void *)&tw_uint16, sizeof(TW_UINT16));
+		}
+			break;
+		case TWTY_UINT32:
 		{
 			TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
-			memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
+			memcpy((void *)&p->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
 		}
 			break;
+		case TWTY_BOOL:
+		{
+			memcpy((void *)&p->Item, (const void *)&tw_bool, sizeof(TW_BOOL));
+		}
+			break;
+		case TWTY_STR32:
+		case TWTY_STR64:
+		case TWTY_STR128:
+		case TWTY_STR255:
+		{
+			
+		}
+			break;
+			//					case TWTY_STR1024:
+			//					case TWTY_UNI512:
+			//						break;
+		default:
+			break;
 	}
-	
+
 }
 
 void getCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& returnValue)

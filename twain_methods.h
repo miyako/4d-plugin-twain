@@ -35,6 +35,6 @@ typedef struct
 TW_UINT16 getCapabilityFromString(C_TEXT& Param2);
 void getStringFromCapability(TW_UINT16 cap, std::wstring &stringValue);
 void getCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& returnValue);
-void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& Param3, char *str, TW_UINT16 itemType);
+void setCapabilityValueString(TW_UINT16 cap, pTW_ONEVALUE p, char *str);
 
 #endif

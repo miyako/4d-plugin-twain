@@ -920,9 +920,11 @@ namespace TWAIN
 				//always ONEVALUE container
 				tw_capability.ConType = TWON_ONEVALUE;
 				tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
-				void *p = DSM::Lock(tw_capability.hContainer);
-					
-				setCapabilityValueString(&tw_capability, p, Param3, str, itemType);
+				pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);;
+	
+				p->ItemType = itemType;
+				
+				setCapabilityValueString(cap, p, str);
 				
 				if(TWRC_SUCCESS == DSM_Entry(
 																		 &DSM::tw_identity,
