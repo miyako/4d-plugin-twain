@@ -896,203 +896,45 @@ namespace TWAIN
 				CUTF8String u8value;
 				Param3.copyUTF8String(&u8value);
 				memcpy(str, u8value.c_str(), u8value.length());
-				
-				//for ALL
-				TW_UINT32 contSize = 0;
-				
-				//for ARRAY and ENUM
+
 				TW_UINT16 itemType = 0;
-				TW_UINT32 numItems = 0;
-				TW_UINT8  *itemList = NULL;
-				
-				//for RANGE
-				TW_UINT32 minValue = 0;
-				TW_UINT32 maxValue = 0;
-				TW_UINT32 stepSize = 0;
-				TW_UINT32 defaultValue = 0;
-				
 				switch(tw_capability.ConType)
 				{
 					case TWON_ARRAY:
 						itemType = ((pTW_ARRAY)tw_capability.hContainer)->ItemType;
-						numItems = ((pTW_ARRAY)tw_capability.hContainer)->NumItems;
-						itemList = ((pTW_ARRAY)tw_capability.hContainer)->ItemList;
-						contSize = sizeof(TW_ARRAY) + (numItems * getSizeForItemType(itemType));
 						break;
 					case TWON_ENUMERATION:
 						itemType = ((pTW_ENUMERATION)tw_capability.hContainer)->ItemType;
-						numItems = ((pTW_ENUMERATION)tw_capability.hContainer)->NumItems;
-						itemList = ((pTW_ARRAY)tw_capability.hContainer)->ItemList;
-						contSize = sizeof(TW_ENUMERATION) + (numItems * getSizeForItemType(itemType));
 						break;
 					case TWON_ONEVALUE:
 						itemType = ((pTW_ONEVALUE)tw_capability.hContainer)->ItemType;
-						if(itemType == TWTY_FRAME)
-						{
-							contSize = sizeof(TW_ONEVALUE) + sizeof(TW_FRAME);
-						}else
-						{
-							contSize = sizeof(TW_ONEVALUE);
-						}
 						break;
 					case TWON_RANGE:
 						itemType = ((pTW_RANGE)tw_capability.hContainer)->ItemType;
-						minValue = ((pTW_RANGE)tw_capability.hContainer)->MinValue;
-						maxValue = ((pTW_RANGE)tw_capability.hContainer)->MaxValue;
-						stepSize = ((pTW_RANGE)tw_capability.hContainer)->StepSize;
-						defaultValue = ((pTW_RANGE)tw_capability.hContainer)->DefaultValue;
-						contSize = sizeof(TW_RANGE);
 						break;
 				}
 				
-				if(contSize)
+				//always use TW_ONEVALUE container to set
+				tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
+				tw_capability.ConType = TWON_ONEVALUE;
+				
+				pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
+				p->ItemType = itemType;
+				
+				setCapabilityValueString(&tw_capability, p, str);
+				
+				if(TWRC_SUCCESS == DSM_Entry(
+																		 &DSM::tw_identity,
+																		 &DSM::tw_source,
+																		 DG_CONTROL,
+																		 DAT_CAPABILITY,
+																		 MSG_SET,
+																		 (TW_MEMREF)&tw_capability))
 				{
-					tw_capability.hContainer = DSM::Alloc(contSize);
-					void *p = DSM::Lock(tw_capability.hContainer);
 					
-					switch(tw_capability.ConType)
-					{
-						case TWON_ARRAY:
-							((pTW_ARRAY)p)->ItemType = itemType;
-							((pTW_ARRAY)p)->NumItems = numItems;
-						{
-							switch(itemType)
-							{
-								case TWTY_INT8:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_INT8)((pTW_ARRAY)p)->ItemList)[i] = (TW_INT8)itemList[i];
-									}
-									break;
-									
-								case TWTY_INT16:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_INT16)((pTW_ARRAY)p)->ItemList)[i] = (TW_INT16)itemList[i];
-									}
-									break;
-									
-								case TWTY_INT32:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_INT32)((pTW_ARRAY)p)->ItemList)[i] = (TW_INT32)itemList[i];
-									}
-									break;
-									
-								case TWTY_UINT8:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_UINT8)((pTW_ARRAY)p)->ItemList)[i] = (TW_UINT8)itemList[i];
-									}
-									break;
-									
-								case TWTY_UINT16:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_UINT16)((pTW_ARRAY)p)->ItemList)[i] = (TW_UINT16)itemList[i];
-									}
-									break;
-									
-								case TWTY_UINT32:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_UINT32)((pTW_ARRAY)p)->ItemList)[i] = (TW_UINT32)itemList[i];
-									}
-									break;
-									
-								case TWTY_BOOL:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_BOOL)((pTW_ARRAY)p)->ItemList)[i] = (TW_BOOL)itemList[i];
-									}
-									break;
-							}
-						}
-							break;
-						case TWON_ENUMERATION:
-							((pTW_ENUMERATION)p)->ItemType = itemType;
-							((pTW_ENUMERATION)p)->NumItems = numItems;
-						{
-							switch(itemType)
-							{
-								case TWTY_INT8:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_INT8)((pTW_ENUMERATION)p)->ItemList)[i] = (TW_INT8)itemList[i];
-									}
-									break;
-									
-								case TWTY_INT16:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_INT16)((pTW_ENUMERATION)p)->ItemList)[i] = (TW_INT16)itemList[i];
-									}
-									break;
-									
-								case TWTY_INT32:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_INT32)((pTW_ENUMERATION)p)->ItemList)[i] = (TW_INT32)itemList[i];
-									}
-									break;
-									
-								case TWTY_UINT8:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_UINT8)((pTW_ENUMERATION)p)->ItemList)[i] = (TW_UINT8)itemList[i];
-									}
-									break;
-									
-								case TWTY_UINT16:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_UINT16)((pTW_ENUMERATION)p)->ItemList)[i] = (TW_UINT16)itemList[i];
-									}
-									break;
-									
-								case TWTY_UINT32:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_UINT32)((pTW_ENUMERATION)p)->ItemList)[i] = (TW_UINT32)itemList[i];
-									}
-									break;
-									
-								case TWTY_BOOL:
-									for(int i = 0; i<numItems; ++i)
-									{
-										((pTW_BOOL)((pTW_ENUMERATION)p)->ItemList)[i] = (TW_BOOL)itemList[i];
-									}
-									break;
-							}
-						}
-							break;
-						case TWON_ONEVALUE:
-							((pTW_ONEVALUE)p)->ItemType = itemType;
-							break;
-						case TWON_RANGE:
-							((pTW_RANGE)p)->ItemType = itemType;
-							((pTW_RANGE)p)->MinValue = minValue;
-							((pTW_RANGE)p)->MaxValue = maxValue;
-							((pTW_RANGE)p)->StepSize = stepSize;
-							((pTW_RANGE)p)->DefaultValue = defaultValue;
-							break;
-					}
-					
-					setCapabilityValueString(&tw_capability, p, str);
-					
-					if(TWRC_SUCCESS == DSM_Entry(
-																			 &DSM::tw_identity,
-																			 &DSM::tw_source,
-																			 DG_CONTROL,
-																			 DAT_CAPABILITY,
-																			 MSG_SET,
-																			 (TW_MEMREF)&tw_capability))
-					{
-						
-					}
-					DSM::Unlock(tw_capability.hContainer);
-					DSM::Free(tw_capability.hContainer);
-				}//contSize
+				}
+				DSM::Unlock(tw_capability.hContainer);
+				DSM::Free(tw_capability.hContainer);
 
 			}
 		
