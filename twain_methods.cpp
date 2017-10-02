@@ -1,7 +1,14 @@
 #include "twain_methods.h"
 
-void setCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TEXT& value)
+void setCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& value)
 {
+	TW_UINT16 cap = tw_capability->Cap;
+	TW_UINT16 conType = tw_capability->ConType;
+	
+	pTW_ENUMERATION pENUMERATION = (pTW_ENUMERATION)p;
+	pTW_ONEVALUE pONEVALUE = (pTW_ONEVALUE)p;
+	pTW_RANGE pRANGE = (pTW_RANGE)p;
+	
 	//buffer holding string representation
 	char str[CAP_VALUE_BUF_SIZE];
 	memset(str, 0, sizeof(str));
@@ -9,10 +16,6 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 	CUTF8String u8value;
 	value.copyUTF8String(&u8value);
 	memcpy(str, u8value.c_str(), u8value.length());
-	
-	TW_UINT16 cap = tw_capability->Cap;
-
-	//constant matching: i_value, b_value, f_value
 	
 	int i_value = atoi(str);
 	double f_value = atof(str);
@@ -41,6 +44,7 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 	
 	TW_FIX32 tw_fix32;
 	
+	//constant matching
 	switch(cap)
 	{
 			//convert to constant
@@ -1425,82 +1429,204 @@ void setCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 	}
 	
-	switch(p->ItemType)
+	switch(conType)
 	{
-		case TWTY_FIX32:
-		{
-			TW_INT32 value = (TW_INT32) (f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
-			tw_fix32.Whole = (TW_UINT16)(value >> 16);
-			tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
-			memcpy((void *)&p->Item, (const void *)&tw_fix32, sizeof(TW_FIX32));
-		}
+		case TWON_ARRAY:
+
 			break;
-		case TWTY_FRAME:
-			//not implemented!
-			break;
-		case TWTY_INT8:
-		{
-			TW_INT8 tw_int8 = (TW_INT8)i_value;
-			memcpy((void *)&p->Item, (const void *)&tw_int8, sizeof(TW_INT8));
-		}
-			break;
-		case TWTY_INT16:
-		{
-			TW_INT16 tw_int16 = (TW_INT16)i_value;
-			memcpy((void *)&p->Item, (const void *)&tw_int16, sizeof(TW_INT16));
-		}
-			break;
-		case TWTY_INT32:
-		{
-			TW_INT32 tw_int32 = (TW_INT32)i_value;
-			memcpy((void *)&p->Item, (const void *)&tw_int32, sizeof(TW_INT32));
-		}
-			break;
-		case TWTY_UINT8:
-		{
-			TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
-			memcpy((void *)&p->Item, (const void *)&tw_uint8, sizeof(TW_UINT8));
-		}
-			break;
-		case TWTY_UINT16:
-		{
-			TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
-			memcpy((void *)&p->Item, (const void *)&tw_uint16, sizeof(TW_UINT16));
-		}
-			break;
-		case TWTY_UINT32:
-		{
-			TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
-			memcpy((void *)&p->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
-		}
-			break;
-		case TWTY_BOOL:
-		{
-			memcpy((void *)&p->Item, (const void *)&b_value, sizeof(TW_BOOL));
-		}
-			break;
-		case TWTY_STR32:
-		case TWTY_STR64:
-		case TWTY_STR128:
-		case TWTY_STR255:
-		{
 			
+		case TWON_ENUMERATION:
+			for(int i = 0; i< pENUMERATION->NumItems; ++i)
+			{
+				if(i_value == (pENUMERATION->ItemList)[i])
+				{
+					pENUMERATION->CurrentIndex = i;
+					break;
+				}
+			}
+			break;
+			
+		case TWON_ONEVALUE:
+			switch(pONEVALUE->ItemType)
+		{
+			case TWTY_FIX32:
+			{
+				TW_INT32 value = (TW_INT32) (f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
+				tw_fix32.Whole = (TW_UINT16)(value >> 16);
+				tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_fix32, sizeof(TW_FIX32));
+			}
+				break;
+			case TWTY_FRAME:
+			{
+				//not implemented!
+			}
+				break;
+			case TWTY_INT8:
+			{
+				TW_INT8 tw_int8 = (TW_INT8)i_value;
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int8, sizeof(TW_INT8));
+			}
+				break;
+			case TWTY_INT16:
+			{
+				TW_INT16 tw_int16 = (TW_INT16)i_value;
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int16, sizeof(TW_INT16));
+			}
+				break;
+			case TWTY_INT32:
+			{
+				TW_INT32 tw_int32 = (TW_INT32)i_value;
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int32, sizeof(TW_INT32));
+			}
+				break;
+			case TWTY_UINT8:
+			{
+				TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint8, sizeof(TW_UINT8));
+			}
+				break;
+			case TWTY_UINT16:
+			{
+				TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint16, sizeof(TW_UINT16));
+			}
+				break;
+			case TWTY_UINT32:
+			{
+				TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
+				memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
+			}
+				break;
+			case TWTY_BOOL:
+			{
+				memcpy((void *)&pONEVALUE->Item, (const void *)&b_value, sizeof(TW_BOOL));
+			}
+				break;
+			case TWTY_STR32:
+			case TWTY_STR64:
+			case TWTY_STR128:
+			case TWTY_STR255:
+			{
+				
+			}
+				break;
+				//					case TWTY_STR1024:
+				//					case TWTY_UNI512:
+				//						break;
+			default:
+				break;
 		}
 			break;
-			//					case TWTY_STR1024:
-			//					case TWTY_UNI512:
-			//						break;
-		default:
+			
+		case TWON_RANGE:
+			switch(((pTW_RANGE)tw_capability)->ItemType)
+		{
+			case TWTY_FIX32:
+			{
+				double f_value = atof(str);
+				TW_INT32 value = (TW_INT32) (f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
+				tw_fix32.Whole = (TW_UINT16)(value >> 16);
+				tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
+				memcpy((void *)&((pTW_RANGE)tw_capability)->CurrentValue, (const void *)&tw_fix32, sizeof(TW_FIX32));
+			}
+				break;
+			case TWTY_FRAME:
+			{
+				//not implemented!
+			}
+				break;
+			case TWTY_INT8:
+			{
+				TW_INT8 tw_int8 = (TW_INT8)i_value;
+				memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int8, sizeof(TW_INT8));
+			}
+				break;
+			case TWTY_INT16:
+			{
+				TW_INT16 tw_int16 = (TW_INT16)i_value;
+				memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int16, sizeof(TW_INT16));
+			}
+				break;
+			case TWTY_INT32:
+			{
+				TW_INT32 tw_int32 = (TW_INT32)i_value;
+				memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int32, sizeof(TW_INT32));
+			}
+				break;
+			case TWTY_UINT8:
+			{
+				TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
+				memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint8, sizeof(TW_UINT8));
+			}
+				break;
+			case TWTY_UINT16:
+			{
+				TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
+				memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint16, sizeof(TW_UINT16));
+			}
+				break;
+			case TWTY_UINT32:
+			{
+				TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
+				memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint32, sizeof(TW_UINT32));
+			}
+				break;
+			case TWTY_BOOL:
+			{
+				memcpy((void *)&pRANGE->CurrentValue, (const void *)&b_value, sizeof(TW_BOOL));
+			}
+				break;
+			case TWTY_STR32:
+			case TWTY_STR64:
+			case TWTY_STR128:
+			case TWTY_STR255:
+			{
+				
+			}
+				break;
+				//					case TWTY_STR1024:
+				//					case TWTY_UNI512:
+				//						break;
+			default:
+				break;
+		}
 			break;
+			
 	}
+
 }
 
-void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TEXT& returnValue)
+void getCapabilityValueString(TW_CAPABILITY *tw_capability, void *p, C_TEXT& value)
 {
 	TW_UINT16 cap = tw_capability->Cap;
+	TW_UINT16 conType = tw_capability->ConType;
+
+	pTW_ENUMERATION pENUMERATION = (pTW_ENUMERATION)p;
+	pTW_ONEVALUE pONEVALUE = (pTW_ONEVALUE)p;
+	pTW_RANGE pRANGE = (pTW_RANGE)p;
 	
 	char str[CAP_VALUE_BUF_SIZE];
 	memset(str, 0, sizeof(str));
+	
+	TW_UINT32 item = 0;
+	
+	switch(conType)
+	{
+		case TWON_ARRAY:
+			
+			break;
+		case TWON_ENUMERATION:
+			item = pENUMERATION->ItemList[pENUMERATION->CurrentIndex];
+			break;
+		case TWON_ONEVALUE:
+			item = pONEVALUE->Item;
+			break;
+		case TWON_RANGE:
+			item = pRANGE->CurrentValue;
+			break;
+	}
+	
 	
 	switch(cap)
 	{
@@ -1508,7 +1634,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 #if USE_TWAIN_DSM
 		case ICAP_AUTOSIZE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWAS_NONE:
 					sprintf(str, "%s", "TWAS_NONE");break;
@@ -1521,7 +1647,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_AUTODISCARDBLANKPAGES:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWBP_DISABLE:
 					sprintf(str, "%s", "TWBP_DISABLE");break;
@@ -1532,7 +1658,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_CAMERASIDE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWCS_BOTH:
 					sprintf(str, "%s", "TWCS_BOTH");break;
@@ -1545,7 +1671,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_FEEDERTYPE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWFE_GENERAL:
 					sprintf(str, "%s", "TWFE_GENERAL");break;
@@ -1556,7 +1682,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_FEEDERPOCKET:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWFP_POCKETERROR:
 					sprintf(str, "%s", "TWFP_POCKETERROR");break;
@@ -1597,7 +1723,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_ICCPROFILE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWIC_NONE:
 					sprintf(str, "%s", "TWIC_NONE");break;
@@ -1610,7 +1736,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_IMAGEMERGE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWIM_NONE:
 					sprintf(str, "%s", "TWIM_NONE");break;
@@ -1627,7 +1753,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_SEGMENTED:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWSG_NONE:
 					sprintf(str, "%s", "TWSG_NONE");break;
@@ -1641,7 +1767,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 #endif
 		case CAP_ALARMS:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWAL_ALARM:
 					sprintf(str, "%s", "TWAL_ALARM");break;
@@ -1666,7 +1792,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_COMPRESSION:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWCP_NONE:
 					sprintf(str, "%s", "TWCP_NONE");break;
@@ -1699,7 +1825,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_BARCODESEARCHMODE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWBD_HORZ:
 					sprintf(str, "%s", "TWBD_HORZ");break;
@@ -1714,7 +1840,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_BITORDER:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWBO_LSBFIRST:
 					sprintf(str, "%s", "TWBO_LSBFIRST");break;
@@ -1725,7 +1851,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_BITDEPTHREDUCTION:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWBR_THRESHOLD:
 					sprintf(str, "%s", "TWBR_THRESHOLD");break;
@@ -1741,7 +1867,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 		case ICAP_SUPPORTEDBARCODETYPES:
 		case TWEI_BARCODETYPE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWBT_3OF9:
 					sprintf(str, "%s", "TWBT_3OF9");break;
@@ -1788,7 +1914,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_CLEARBUFFERS:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWCB_AUTO:
 					sprintf(str, "%s", "TWCB_AUTO");break;
@@ -1801,7 +1927,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_DEVICEEVENT:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWDE_CUSTOMEVENTS:
 					sprintf(str, "%s", "TWDE_CUSTOMEVENTS");break;
@@ -1844,7 +1970,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_DUPLEX:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWDX_NONE:
 					sprintf(str, "%s", "TWDX_NONE");break;
@@ -1857,7 +1983,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_FEEDERALIGNMENT:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWFA_NONE:
 					sprintf(str, "%s", "TWFA_NONE");break;
@@ -1872,7 +1998,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_IMAGEFILEFORMAT:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWFF_TIFF:
 					sprintf(str, "%s", "TWFF_TIFF");break;
@@ -1899,7 +2025,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_FLASHUSED2:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWFL_NONE:
 					sprintf(str, "%s", "TWFL_NONE");break;
@@ -1916,7 +2042,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_FEEDERORDER:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWFO_FIRSTPAGEFIRST:
 					sprintf(str, "%s", "TWFO_FIRSTPAGEFIRST");break;
@@ -1927,7 +2053,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_FLIPROTATION:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWFR_BOOK:
 					sprintf(str, "%s", "TWFR_BOOK");break;
@@ -1938,7 +2064,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_FILTER:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWFT_RED:
 					sprintf(str, "%s", "TWFT_RED");break;
@@ -1963,7 +2089,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_IMAGEFILTER:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWIF_NONE:
 					sprintf(str, "%s", "TWIF_NONE");break;
@@ -1984,7 +2110,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_JOBCONTROL:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWJC_NONE:
 					sprintf(str, "%s", "TWJC_NONE");break;
@@ -2001,7 +2127,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_JPEGQUALITY:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWJQ_UNKNOWN:
 					sprintf(str, "%s", "TWJQ_UNKNOWN");break;
@@ -2016,7 +2142,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_LIGHTPATH:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWLP_REFLECTIVE:
 					sprintf(str, "%s", "TWLP_REFLECTIVE");break;
@@ -2027,7 +2153,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_LIGHTSOURCE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWLS_RED:
 					sprintf(str, "%s", "TWLS_RED");break;
@@ -2048,7 +2174,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_NOISEFILTER:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWNF_NONE:
 					sprintf(str, "%s", "TWNF_NONE");break;
@@ -2063,7 +2189,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_ORIENTATION:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWOR_ROT0:
 					sprintf(str, "%s", "TWOR_ROT0");break;
@@ -2082,7 +2208,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_OVERSCAN:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWOV_NONE:
 					sprintf(str, "%s", "TWOV_NONE");break;
@@ -2099,7 +2225,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_PLANARCHUNKY:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWPC_CHUNKY:
 					sprintf(str, "%s", "TWPC_CHUNKY");break;
@@ -2110,7 +2236,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_PIXELFLAVOR:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWPF_CHOCOLATE:
 					sprintf(str, "%s", "TWPF_CHOCOLATE");break;
@@ -2121,7 +2247,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_PRINTERMODE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWPM_SINGLESTRING:
 					sprintf(str, "%s", "TWPM_SINGLESTRING");break;
@@ -2134,7 +2260,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_PRINTER:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWPR_IMPRINTERTOPBEFORE:
 					sprintf(str, "%s", "TWPR_IMPRINTERTOPBEFORE");break;
@@ -2157,7 +2283,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case CAP_POWERSUPPLY:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWPS_EXTERNAL:
 					sprintf(str, "%s", "TWPS_EXTERNAL");break;
@@ -2168,7 +2294,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_PIXELTYPE:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWPT_BW:
 					sprintf(str, "%s", "TWPT_BW");break;
@@ -2193,7 +2319,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_SUPPORTEDSIZES:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWSS_NONE:
 					sprintf(str, "%s", "TWSS_NONE");break;
@@ -2318,7 +2444,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_XFERMECH:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWSX_NATIVE:
 					sprintf(str, "%s", "TWSX_NATIVE");break;
@@ -2333,7 +2459,7 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 			break;
 		case ICAP_UNITS:
 		{
-			switch(p->Item)
+			switch(item)
 			{
 				case TWUN_INCHES:
 					sprintf(str, "%s", "TWUN_INCHES");break;
@@ -2353,81 +2479,165 @@ void getCapabilityValueString(TW_CAPABILITY *tw_capability, pTW_ONEVALUE p, C_TE
 		default:
 		{
 			//generic
-			switch(p->ItemType)
+			switch(conType)
 			{
-				case TWTY_FIX32:
+				case TWON_ARRAY:
+
+					break;
+				case TWON_ENUMERATION:
+					switch(pENUMERATION->ItemType)
 				{
-					pTW_FIX32 pFix32 = (pTW_FIX32)&p->Item;
-					sprintf(str, "%d.%u", pFix32->Whole, pFix32->Frac);
+					case TWTY_FIX32:
+					{
+						pTW_FIX32 pFix32 = &((pTW_FIX32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%d.%u", pFix32->Whole, pFix32->Frac);
+					}
+						break;
+					case TWTY_FRAME:
+					{
+						pTW_FRAME pframe = &((pTW_FRAME)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%d.%u,%d.%u,%d.%u,%d.%u",
+										pframe->Top.Whole, pframe->Top.Frac,
+										pframe->Left.Whole, pframe->Left.Frac,
+										pframe->Right.Whole, pframe->Right.Frac,
+										pframe->Bottom.Whole, pframe->Bottom.Frac);
+					}
+						break;
+					case TWTY_INT8:
+					case TWTY_INT16:
+					case TWTY_INT32:
+					{
+						TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%d", currentValue);
+					}
+						break;
+					case TWTY_UINT8:
+					case TWTY_UINT16:
+					case TWTY_UINT32:
+					{
+						TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%u", currentValue);
+					}
+						break;
+					case TWTY_BOOL:
+					{
+						TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%s", currentValue ? "true" : "false");
+					}
+						break;
+					case TWTY_STR32:
+					{
+						pTW_STR32 pStr32 = &((pTW_STR32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%s", pStr32);
+					}
+						break;
+					case TWTY_STR64:
+					{
+						pTW_STR64 pStr64 = &((pTW_STR64)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%s", pStr64);
+					}
+						break;
+					case TWTY_STR128:
+					{
+						pTW_STR128 pStr128 = &((pTW_STR128)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%s", pStr128);
+					}
+						break;
+					case TWTY_STR255:
+					{
+						pTW_STR255 pStr255 = &((pTW_STR255)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+						sprintf(str, "%s", pStr255);
+					}
+						break;
+						//					case TWTY_STR1024:
+						//					case TWTY_UNI512:
+						//						break;
+					default:
+						break;
 				}
 					break;
-				case TWTY_FRAME:
+				case TWON_ONEVALUE:
+					switch(pONEVALUE->ItemType)
 				{
-					pTW_FRAME pframe = (pTW_FRAME)&p->Item;
-					sprintf(str, "%d.%u,%d.%u,%d.%u,%d.%u",
-									pframe->Top.Whole, pframe->Top.Frac,
-									pframe->Left.Whole, pframe->Left.Frac,
-									pframe->Right.Whole, pframe->Right.Frac,
-									pframe->Bottom.Whole, pframe->Bottom.Frac);
+					case TWTY_FIX32:
+					{
+						pTW_FIX32 pFix32 = (pTW_FIX32)&pONEVALUE->Item;
+						sprintf(str, "%d.%u", pFix32->Whole, pFix32->Frac);
+					}
+						break;
+					case TWTY_FRAME:
+					{
+						pTW_FRAME pframe = (pTW_FRAME)&pONEVALUE->Item;
+						sprintf(str, "%d.%u,%d.%u,%d.%u,%d.%u",
+										pframe->Top.Whole, pframe->Top.Frac,
+										pframe->Left.Whole, pframe->Left.Frac,
+										pframe->Right.Whole, pframe->Right.Frac,
+										pframe->Bottom.Whole, pframe->Bottom.Frac);
+					}
+						break;
+					case TWTY_INT8:
+					case TWTY_INT16:
+					case TWTY_INT32:
+					{
+						TW_UINT32 currentValue = pONEVALUE->Item;
+						sprintf(str, "%d", currentValue);
+					}
+						break;
+					case TWTY_UINT8:
+					case TWTY_UINT16:
+					case TWTY_UINT32:
+					{
+						TW_UINT32 currentValue = pONEVALUE->Item;
+						sprintf(str, "%u", currentValue);
+					}
+						break;
+					case TWTY_BOOL:
+					{
+						TW_UINT32 currentValue = pONEVALUE->Item;
+						sprintf(str, "%s", currentValue ? "true" : "false");
+					}
+						break;
+					case TWTY_STR32:
+					{
+						pTW_STR32 pStr32 = (pTW_STR32)&pONEVALUE->Item;
+						sprintf(str, "%s", pStr32);
+					}
+						break;
+					case TWTY_STR64:
+					{
+						pTW_STR64 pStr64 = (pTW_STR64)&pONEVALUE->Item;
+						sprintf(str, "%s", pStr64);
+					}
+						break;
+					case TWTY_STR128:
+					{
+						pTW_STR128 pStr128 = (pTW_STR128)&pONEVALUE->Item;
+						sprintf(str, "%s", pStr128);
+					}
+						break;
+					case TWTY_STR255:
+					{
+						pTW_STR255 pStr255 = (pTW_STR255)&pONEVALUE->Item;
+						sprintf(str, "%s", pStr255);
+					}
+						break;
+//					case TWTY_STR1024:
+//					case TWTY_UNI512:
+//						break;
+					default:
+						break;
 				}
 					break;
-				case TWTY_INT8:
-				case TWTY_INT16:
-				case TWTY_INT32:
-				{
-					TW_UINT32 currentValue = p->Item;
-					sprintf(str, "%d", currentValue);
-				}
-					break;
-				case TWTY_UINT8:
-				case TWTY_UINT16:
-				case TWTY_UINT32:
-				{
-					TW_UINT32 currentValue = p->Item;
+				case TWON_RANGE:
+					TW_UINT32 currentValue = pRANGE->CurrentValue;
 					sprintf(str, "%u", currentValue);
-				}
-					break;
-				case TWTY_BOOL:
-				{
-					TW_UINT32 currentValue = p->Item;
-					sprintf(str, "%s", currentValue ? "true" : "false");
-				}
-					break;
-				case TWTY_STR32:
-				{
-					pTW_STR32 pStr32 = (pTW_STR32)&p->Item;
-					sprintf(str, "%s", pStr32);
-				}
-					break;
-				case TWTY_STR64:
-				{
-					pTW_STR64 pStr64 = (pTW_STR64)&p->Item;
-					sprintf(str, "%s", pStr64);
-				}
-					break;
-				case TWTY_STR128:
-				{
-					pTW_STR128 pStr128 = (pTW_STR128)&p->Item;
-					sprintf(str, "%s", pStr128);
-				}
-					break;
-				case TWTY_STR255:
-				{
-					pTW_STR255 pStr255 = (pTW_STR255)&p->Item;
-					sprintf(str, "%s", pStr255);
-				}
-					break;
-					//					case TWTY_STR1024:
-					//					case TWTY_UNI512:
-					//						break;
-				default:
 					break;
 			}
 		}
 			break;
 	}
 	CUTF8String u8value = (const uint8_t *)str;
-	returnValue.setUTF8String(&u8value);
+	value.setUTF8String(&u8value);
 }
 
 void getStringFromCapability(TW_UINT16 cap, std::wstring &stringValue)

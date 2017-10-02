@@ -903,38 +903,30 @@ namespace TWAIN
 						itemType = ((pTW_ENUMERATION)_p)->ItemType;
 						break;
 					case TWON_ONEVALUE:
-						itemType = ((pTW_ONEVALUE)_p)->ItemType;
+					{
+						tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
+						tw_capability.ConType = TWON_ONEVALUE;
+						pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
+						setCapabilityValueString(&tw_capability, p, Param3);
+						
+						if(TWRC_SUCCESS == DSM_Entry(
+																				 &DSM::tw_identity,
+																				 &DSM::tw_source,
+																				 DG_CONTROL,
+																				 DAT_CAPABILITY,
+																				 MSG_SET,
+																				 (TW_MEMREF)&tw_capability))
+						{
+							
+						}
+						DSM::Unlock(tw_capability.hContainer);
+						DSM::Free(tw_capability.hContainer);
+					}
 						break;
 					case TWON_RANGE:
 						itemType = ((pTW_RANGE)_p)->ItemType;
 						break;
 				}
-				DSM::Unlock(tw_capability.hContainer);
-				DSM::Free(tw_capability.hContainer);
-
-				//new handle (container)
-				tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
-				tw_capability.ConType = TWON_ONEVALUE;
-				
-				pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
-				
-				//set itemType to new handle
-				p->ItemType = itemType;
-				
-				setCapabilityValueString(&tw_capability, p, Param3);
-				
-				if(TWRC_SUCCESS == DSM_Entry(
-																		 &DSM::tw_identity,
-																		 &DSM::tw_source,
-																		 DG_CONTROL,
-																		 DAT_CAPABILITY,
-																		 MSG_SET,
-																		 (TW_MEMREF)&tw_capability))
-				{
-					
-				}
-				DSM::Unlock(tw_capability.hContainer);
-				DSM::Free(tw_capability.hContainer);
 
 			}
 		
