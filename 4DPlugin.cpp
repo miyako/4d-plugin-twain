@@ -992,6 +992,8 @@ namespace TWAIN
 			Param2.appendUTF16String((const PA_Unichar *)optionName.c_str(), optionName.length());
 #endif
 			
+			C_TEXT returnValue;
+			
 			tw_capability.ConType = 0;
 			tw_capability.hContainer = 0;
 			if(TWRC_SUCCESS == DSM_Entry(
@@ -1012,9 +1014,7 @@ namespace TWAIN
 					case TWON_ARRAY:
 					{
 						pTW_ARRAY p = (pTW_ARRAY)DSM::Lock(tw_capability.hContainer);
-						C_TEXT returnValue;
 						getCapabilityValueString(&tw_capability, p, returnValue);
-						Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						for (int i = 0; i < p->NumItems;++i)
 						{
@@ -1109,9 +1109,7 @@ namespace TWAIN
 					case TWON_ENUMERATION:
 					{
 						pTW_ENUMERATION p = (pTW_ENUMERATION)DSM::Lock(tw_capability.hContainer);
-						C_TEXT returnValue;
 						getCapabilityValueString(&tw_capability, p, returnValue);
-						Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						for (int i = 0; i < p->NumItems;++i)
 						{
@@ -1206,9 +1204,7 @@ namespace TWAIN
 					case TWON_RANGE:
 					{
 						pTW_RANGE p = (pTW_RANGE)DSM::Lock(tw_capability.hContainer);
-						C_TEXT returnValue;
 						getCapabilityValueString(&tw_capability, p, returnValue);
-						Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						json_set_i(json_scanner_option, L"MinValue", p->MinValue);
 						json_set_i(json_scanner_option, L"MaxValue", p->MaxValue);
@@ -1222,9 +1218,7 @@ namespace TWAIN
 					case TWON_ONEVALUE:
 					{
 						pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
-						C_TEXT returnValue;
 						getCapabilityValueString(&tw_capability, p, returnValue);
-						Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 						json_set_i(json_scanner_option, L"type", p->ItemType);
 						DSM::Unlock(tw_capability.hContainer);
 						DSM::Free(tw_capability.hContainer);
@@ -1232,6 +1226,8 @@ namespace TWAIN
 						break;
 				}
 			}
+			
+			Param3.appendUTF16String(returnValue.getUTF16StringPtr(), returnValue.getUTF16Length());
 			json_push_back(json_scanner_options, json_scanner_option);
 		}
 	}
