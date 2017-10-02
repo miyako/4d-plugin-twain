@@ -890,42 +890,72 @@ namespace TWAIN
 																	 MSG_GET,
 																	 (TW_MEMREF)&tw_capability))
 			{
-				TW_UINT16 itemType;
+				TW_UINT16 itemType = 0;
+				TW_UINT32 numItems = 0;
+				TW_UINT32 contSize = 0;
 				
 				//get itemType from old handle
 				void *_p = DSM::Lock(tw_capability.hContainer);
 				switch(tw_capability.ConType)
 				{
 					case TWON_ARRAY:
-						itemType = ((pTW_ARRAY)_p)->ItemType;
+		
 						break;
 					case TWON_ENUMERATION:
 						itemType = ((pTW_ENUMERATION)_p)->ItemType;
+						numItems = ((pTW_ENUMERATION)_p)->NumItems;
+						contSize = sizeof(TW_ENUMERATION) + (getSizeForItemType(itemType) * numItems);
 						break;
 					case TWON_ONEVALUE:
-					{
-						tw_capability.hContainer = DSM::Alloc(sizeof(TW_ONEVALUE));
-						tw_capability.ConType = TWON_ONEVALUE;
-						pTW_ONEVALUE p = (pTW_ONEVALUE)DSM::Lock(tw_capability.hContainer);
-						setCapabilityValueString(&tw_capability, p, Param3);
-						
-						if(TWRC_SUCCESS == DSM_Entry(
-																				 &DSM::tw_identity,
-																				 &DSM::tw_source,
-																				 DG_CONTROL,
-																				 DAT_CAPABILITY,
-																				 MSG_SET,
-																				 (TW_MEMREF)&tw_capability))
-						{
-							
-						}
-						DSM::Unlock(tw_capability.hContainer);
-						DSM::Free(tw_capability.hContainer);
-					}
+						itemType = ((pTW_ONEVALUE)_p)->ItemType;
+						contSize = sizeof(TW_ONEVALUE);
 						break;
 					case TWON_RANGE:
 						itemType = ((pTW_RANGE)_p)->ItemType;
+						contSize = sizeof(TW_RANGE);
 						break;
+				}
+				//_p
+				DSM::Unlock(tw_capability.hContainer);
+				DSM::Free(tw_capability.hContainer);
+				
+				if(contSize)
+				{
+					tw_capability.hContainer = DSM::Alloc(contSize);
+					
+					void *p = DSM::Lock(tw_capability.hContainer);
+					
+					switch(tw_capability.ConType)
+					{
+						case TWON_ARRAY:
+							
+							break;
+						case TWON_ENUMERATION:
+							((pTW_ENUMERATION)p)->ItemType = itemType;
+							((pTW_ENUMERATION)p)->NumItems = numItems;
+							break;
+						case TWON_ONEVALUE:
+							((pTW_ONEVALUE)p)->ItemType = itemType;
+							break;
+						case TWON_RANGE:
+							((pTW_RANGE)p)->ItemType = itemType;
+							break;
+					}
+					
+					setCapabilityValueString(&tw_capability, p, Param3);
+					
+					if(TWRC_SUCCESS == DSM_Entry(
+																			 &DSM::tw_identity,
+																			 &DSM::tw_source,
+																			 DG_CONTROL,
+																			 DAT_CAPABILITY,
+																			 MSG_SET,
+																			 (TW_MEMREF)&tw_capability))
+					{
+						
+					}
+					DSM::Unlock(tw_capability.hContainer);
+					DSM::Free(tw_capability.hContainer);
 				}
 
 			}
