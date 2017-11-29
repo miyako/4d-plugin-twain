@@ -19,7 +19,7 @@ TWAIN SCANNERS LIST (scanners)
 
 Parameter|Type|Description
 ------------|------------|----
-scanners|ARRAY TEXT|scanner names. ``#0`` is detailed ``JSON`` (out)
+scanners|ARRAY TEXT|scanner names. ``#0`` is detailed ``JSON``
 
 Properties of ``scanners{0}``
 
@@ -57,3 +57,5 @@ scanner|TEXT|scanner name
 setting|TEXT|``JSON``
 format|LONGINT|``Scanner image type JPEG`` or ``Scanner image type PNG``
 images|ARRAY PICTURE|
+
+on windows the call is executed in a new thread with [``_beginthreadex``](https://msdn.microsoft.com/en-us/library/kdzttdcb.aspx)
