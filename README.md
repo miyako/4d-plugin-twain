@@ -41,8 +41,12 @@ default:=TWAIN Get default option (scanner;settings)
 
 Parameter|Type|Description
 ------------|------------|----
-scanner|TEXT|
-settings|TEXT|
-default|TEXT|
+scanner|TEXT|scanner name
+settings|TEXT|``JSON``
+default|TEXT|``JSON``
+
+only features included in ``CAP_SUPPORTEDCAPS`` are returned. ``default`` is the current setting. ``settings`` explains valid values for each feature.
+
+
 
 
