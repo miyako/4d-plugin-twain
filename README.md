@@ -55,5 +55,5 @@ Parameter|Type|Description
 ------------|------------|----
 scanner|TEXT|scanner name
 setting|TEXT|``JSON``
-format|LONGINT|``0`` for ``JPG``, ``2`` for ``PNG``
+format|LONGINT|``Scanner image type JPEG`` or ``Scanner image type PNG``
 images|ARRAY PICTURE|
