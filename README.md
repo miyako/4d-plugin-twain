@@ -36,17 +36,24 @@ Version:
 ```
 
 ```
-default:=TWAIN Get default option (scanner;settings)
+default:=TWAIN Get default option (scanner;description)
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 scanner|TEXT|scanner name
-settings|TEXT|``JSON``
-default|TEXT|``JSON``
+description|TEXT|``JSON``
+setting|TEXT|``JSON``
 
-only features included in ``CAP_SUPPORTEDCAPS`` are returned. ``default`` is the current setting. ``settings`` explains valid values for each feature.
+only features included in ``CAP_SUPPORTEDCAPS`` are returned. ``setting`` is the current setting. ``description`` explains valid values for each feature.
 
+```
+TWAIN SCAN (scanner;setting;format;images)
+```
 
-
-
+Parameter|Type|Description
+------------|------------|----
+scanner|TEXT|scanner name
+setting|TEXT|``JSON``
+format|LONGINT|``0`` for ``JPG``, ``2`` for ``PNG``
+images|ARRAY PICTURE|
