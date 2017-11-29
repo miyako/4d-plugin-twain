@@ -1,0 +1,1 @@
+﻿{"name":"TWAIN","id":20000,"commands":[{"theme":"TWAIN","syntax":"TWAIN SCANNERS LIST(&Y)"},{"theme":"TWAIN","syntax":"TWAIN Get default option(&T;&T):T"},{"theme":"TWAIN","syntax":"TWAIN SCAN(&T;&T;&L;&Y)"}]}
