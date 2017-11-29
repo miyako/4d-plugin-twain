@@ -35,6 +35,8 @@ Version:
   Country : number
 ```
 
+names of all TWAIN scanners installed on the system are returned, whether online or not.
+
 ```
 default:=TWAIN Get default option (scanner;description)
 ```
@@ -47,6 +49,10 @@ setting|TEXT|``JSON``
 
 only features included in ``CAP_SUPPORTEDCAPS`` are returned. ``setting`` is the current setting. ``description`` explains valid values for each feature.
 
+empty string specified the default scanner.
+
+the device must be online to retrive values.
+
 ```
 TWAIN SCAN (scanner;setting;format;images)
 ```
@@ -57,5 +63,7 @@ scanner|TEXT|scanner name
 setting|TEXT|``JSON``
 format|LONGINT|``Scanner image type JPEG`` or ``Scanner image type PNG``
 images|ARRAY PICTURE|
+
+empty string specified the default scanner.
 
 on windows the call is executed in a new thread with [``_beginthreadex``](https://msdn.microsoft.com/en-us/library/kdzttdcb.aspx)
