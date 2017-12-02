@@ -8,38 +8,7 @@
  #
  # --------------------------------------------------------------------------------*/
 
-#define JPEG_DEFAULT_RESOLUTION 300
-#define PNG_DEFAULT_RESOLUTION JPEG_DEFAULT_RESOLUTION
-
-#define TWAIN_PROCESS_EVENT_TIMEOUT 30
-
-#define TWAIN_SIGNAL_PREFIX L"TWAIN_4D"
-
-#define INCHES_PER_METER (100.0/2.54)
-
-#define PNG_COLOR_TYPE_UNKNOWN -1
-
-#if VERSIONWIN
-#include <process.h>  
-#define USE_TWAIN_DSM 1
-#define _false FALSE
-#define _true TRUE
-#else
-#define USE_TWAIN_DSM 0
-#endif
-
-#if USE_TWAIN_DSM
-#include "dsm.h"
-#else
-#if VERSIONMAC
-#include <TWAIN/TWAIN.h>
-#define SSTRCPY(d,z,s) strlcpy((char *)d,(const char *)s,(size_t)z)
-#define SSTRCAT(d,z,s) strcat(d,s)
-#define SSTRNCPY(d,z,s,m) strncpy(d,s,m)
-#define SGETENV(d,z,n) strcpy(d,getenv(n)?getenv(n):"")
-typedef void* HWND;
-#endif
-#endif
+//#include "twain_dsm.h"
 
 #define PRODUCT_VENDOR_NAME "4D"
 #define PRODUCT_FAMILY_NAME "4D"
@@ -47,10 +16,10 @@ typedef void* HWND;
 
 #define CMD_Get_database_localization 1009
 
-#include "libjson.h"
-#include "png.h"
-#include "jpeglib.h"
+#include "twain_jpg.h"
+#include "twain_png.h"
 
+#include "twain_json.h"
 // --- TWAIN
 void TWAIN_SCANNERS_LIST(sLONG_PTR *pResult, PackagePtr pParams);
 void TWAIN_Get_default_option(sLONG_PTR *pResult, PackagePtr pParams);
@@ -60,6 +29,45 @@ void TWAIN_SCAN(sLONG_PTR *pResult, PackagePtr pParams);
 
 #if VERSIONWIN
 unsigned __stdcall doScanWin(void *p);
+unsigned __stdcall getOptionWin(void *p);
 #endif
-void doScan(C_TEXT &Param1_scanner, JSONNODE *Param2_option, int Param3_format, C_BLOB& picture);
 
+void doScan(C_TEXT &Param1_scanner,
+						std::wstring& Param2_option,
+						C_BLOB& data,
+						TW_UINT16 majorNum,
+						TW_UINT16 minorNum,
+						TW_UINT16 language,
+						TW_UINT16 country,
+						int Param3_format);
+void getOption(C_TEXT& Param1_scanner, std::wstring& Param2_option, C_BLOB& data,
+							 TW_UINT16 majorNum, TW_UINT16 minorNum, TW_UINT16 language, TW_UINT16 country);
+
+/* thread stuff */
+
+#if VERSIONWIN
+HANDLE createFmIn1(C_TEXT& Param1_scanner,
+									 C_TEXT& Param2_option,
+									 std::wstring& ParamA,
+									 std::wstring& ParamB,
+									 DWORD *ParamA_len,
+									 DWORD *ParamB_len,
+									 DWORD *Param1_len,
+									 DWORD *Param2_len);
+HANDLE createFmIn2(DWORD *ParamA_len,
+									 DWORD *ParamB_len,
+									 DWORD *Param1_len,
+									 DWORD *Param2_len);
+HANDLE createEventforBufIn2(LPVOID bufIn,
+														DWORD ParamA_len,
+														DWORD ParamB_len,
+														DWORD Param1_len,
+														DWORD Param2_len,
+														std::wstring& ParamA,
+														std::wstring& ParamB,
+														C_TEXT& Param1_scanner,
+														std::wstring& Param2_option);
+HANDLE createFmOut2(C_BLOB* data);
+void getDataFromThread2(C_BLOB& data);
+void waitForEvent(HANDLE h, HANDLE scanEvent_p, C_BLOB& data, std::wstring& ParamB, DWORD len);
+#endif

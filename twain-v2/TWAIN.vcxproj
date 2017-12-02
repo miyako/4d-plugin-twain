@@ -122,6 +122,10 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="4DPlugin.cpp" />
+    <ClCompile Include="twain_dsm.cpp" />
+    <ClCompile Include="twain_jpg.cpp" />
+    <ClCompile Include="twain_json.cpp" />
+    <ClCompile Include="twain_png.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="4D Plugin API\4DPluginAPI.h" />
@@ -146,6 +150,10 @@
     <ClInclude Include="4D Plugin API\PrivateTypes.h" />
     <ClInclude Include="4D Plugin API\PublicTypes.h" />
     <ClInclude Include="4DPlugin.h" />
+    <ClInclude Include="twain_dsm.h" />
+    <ClInclude Include="twain_jpg.h" />
+    <ClInclude Include="twain_json.h" />
+    <ClInclude Include="twain_png.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="4D Plugin API\4DPluginAPI.def" />

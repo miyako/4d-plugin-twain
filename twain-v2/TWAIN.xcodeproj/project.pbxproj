@@ -58,6 +58,14 @@
 		D13116F51A03C7AF00DE1322 /* ARRAY_DATE.h in Headers */ = {isa = PBXBuildFile; fileRef = D13116F31A03C7AF00DE1322 /* ARRAY_DATE.h */; };
 		D134D4AC1A030BA0008D14EF /* manifest.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = D134D4A91A030B06008D14EF /* manifest.json */; };
 		D175D9CD1A02E8DD0006B569 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */; };
+		D1F77C601FD04D36001CA181 /* twain_jpg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1F77C5E1FD04D36001CA181 /* twain_jpg.cpp */; };
+		D1F77C611FD04D36001CA181 /* twain_jpg.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F77C5F1FD04D36001CA181 /* twain_jpg.h */; };
+		D1F77C641FD04EC0001CA181 /* twain_png.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1F77C621FD04EC0001CA181 /* twain_png.cpp */; };
+		D1F77C651FD04EC0001CA181 /* twain_png.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F77C631FD04EC0001CA181 /* twain_png.h */; };
+		D1F77C681FD054AB001CA181 /* twain_dsm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1F77C661FD054AB001CA181 /* twain_dsm.cpp */; };
+		D1F77C691FD054AB001CA181 /* twain_dsm.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F77C671FD054AB001CA181 /* twain_dsm.h */; };
+		D1F77C6D1FD05DF8001CA181 /* twain_json.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1F77C6B1FD05DF8001CA181 /* twain_json.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
+		D1F77C6E1FD05DF8001CA181 /* twain_json.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F77C6C1FD05DF8001CA181 /* twain_json.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -89,7 +97,7 @@
 		D10EE86C1FCBAEC50083E346 /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng16.a; sourceTree = "<group>"; };
 		D10EE86D1FCBAEC50083E346 /* libtwaindsm.2.3.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtwaindsm.2.3.1.a; sourceTree = "<group>"; };
 		D10EE86E1FCBAEC50083E346 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libz.a; sourceTree = "<group>"; };
-		D120937E13534DCC00A72CAA /* 4DPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DPlugin.h; sourceTree = "<group>"; };
+		D120937E13534DCC00A72CAA /* 4DPlugin.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = 4DPlugin.h; sourceTree = "<group>"; };
 		D130064E12F02D9700702C0E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		D13116A81A03ACB700DE1322 /* 4DPluginAPI.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = 4DPluginAPI.c; sourceTree = "<group>"; };
 		D13116AA1A03B10800DE1322 /* C_LONGINT.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = C_LONGINT.cpp; path = Classes/C_LONGINT.cpp; sourceTree = "<group>"; };
@@ -128,6 +136,14 @@
 		D134D4A91A030B06008D14EF /* manifest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
 		D14D10DD1A03A8A5008B3411 /* constants.xlf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = constants.xlf; sourceTree = "<group>"; };
 		D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		D1F77C5E1FD04D36001CA181 /* twain_jpg.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = twain_jpg.cpp; sourceTree = "<group>"; };
+		D1F77C5F1FD04D36001CA181 /* twain_jpg.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = twain_jpg.h; sourceTree = "<group>"; };
+		D1F77C621FD04EC0001CA181 /* twain_png.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = twain_png.cpp; sourceTree = "<group>"; };
+		D1F77C631FD04EC0001CA181 /* twain_png.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = twain_png.h; sourceTree = "<group>"; };
+		D1F77C661FD054AB001CA181 /* twain_dsm.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = twain_dsm.cpp; sourceTree = "<group>"; };
+		D1F77C671FD054AB001CA181 /* twain_dsm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = twain_dsm.h; sourceTree = "<group>"; };
+		D1F77C6B1FD05DF8001CA181 /* twain_json.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = twain_json.cpp; sourceTree = "<group>"; };
+		D1F77C6C1FD05DF8001CA181 /* twain_json.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = twain_json.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +168,7 @@
 		089C166AFE841209C02AAC07 /* TWAIN */ = {
 			isa = PBXGroup;
 			children = (
+				D1F77C6A1FD05C2D001CA181 /* twain */,
 				D10EE8691FCBAEC50083E346 /* a */,
 				D108BD7A1A03D1E6001F1B90 /* Manifest */,
 				08FB77ADFE841716C02AAC07 /* Source */,
@@ -290,6 +307,21 @@
 			name = Classes;
 			sourceTree = "<group>";
 		};
+		D1F77C6A1FD05C2D001CA181 /* twain */ = {
+			isa = PBXGroup;
+			children = (
+				D1F77C6B1FD05DF8001CA181 /* twain_json.cpp */,
+				D1F77C6C1FD05DF8001CA181 /* twain_json.h */,
+				D1F77C661FD054AB001CA181 /* twain_dsm.cpp */,
+				D1F77C671FD054AB001CA181 /* twain_dsm.h */,
+				D1F77C5E1FD04D36001CA181 /* twain_jpg.cpp */,
+				D1F77C5F1FD04D36001CA181 /* twain_jpg.h */,
+				D1F77C621FD04EC0001CA181 /* twain_png.cpp */,
+				D1F77C631FD04EC0001CA181 /* twain_png.h */,
+			);
+			name = twain;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -302,9 +334,11 @@
 				D13116D91A03BBFC00DE1322 /* ARRAY_TEXT.h in Headers */,
 				18B684F706944F2000CC6A1E /* 4DPluginAPI.h in Headers */,
 				D13116B91A03B3C300DE1322 /* C_DATE.h in Headers */,
+				D1F77C691FD054AB001CA181 /* twain_dsm.h in Headers */,
 				D13116BD1A03B3C300DE1322 /* C_TIME.h in Headers */,
 				18B684F806944F2000CC6A1E /* EntryPoints.h in Headers */,
 				18B684F906944F2000CC6A1E /* Flags.h in Headers */,
+				D1F77C6E1FD05DF8001CA181 /* twain_json.h in Headers */,
 				D13116E31A03BC1100DE1322 /* ARRAY_BOOLEAN.h in Headers */,
 				D13116B11A03B33D00DE1322 /* C_INTEGER.h in Headers */,
 				18B684FA06944F2000CC6A1E /* PrivateTypes.h in Headers */,
@@ -317,9 +351,11 @@
 				D13116C51A03B48900DE1322 /* C_TEXT.h in Headers */,
 				D13116AD1A03B10800DE1322 /* C_LONGINT.h in Headers */,
 				D120937F13534DCC00A72CAA /* 4DPlugin.h in Headers */,
+				D1F77C611FD04D36001CA181 /* twain_jpg.h in Headers */,
 				D13116E51A03BC1100DE1322 /* ARRAY_INTEGER.h in Headers */,
 				D13116F51A03C7AF00DE1322 /* ARRAY_DATE.h in Headers */,
 				D13116CF1A03B62400DE1322 /* C_PICTURE.h in Headers */,
+				D1F77C651FD04EC0001CA181 /* twain_png.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +446,7 @@
 				D13116AC1A03B10800DE1322 /* C_LONGINT.cpp in Sources */,
 				D13116E81A03BC1100DE1322 /* ARRAY_REAL.cpp in Sources */,
 				18B684FF06944F8800CC6A1E /* 4DPlugin.cpp in Sources */,
+				D1F77C6D1FD05DF8001CA181 /* twain_json.cpp in Sources */,
 				D13116D81A03BBFC00DE1322 /* ARRAY_TEXT.cpp in Sources */,
 				D13116B81A03B3C300DE1322 /* C_DATE.cpp in Sources */,
 				D13116E61A03BC1100DE1322 /* ARRAY_LONGINT.cpp in Sources */,
@@ -420,11 +457,14 @@
 				D13116CE1A03B62400DE1322 /* C_PICTURE.cpp in Sources */,
 				D13116CA1A03B5CC00DE1322 /* C_POINTER.cpp in Sources */,
 				D13116EC1A03BE2300DE1322 /* ARRAY_TIME.cpp in Sources */,
+				D1F77C641FD04EC0001CA181 /* twain_png.cpp in Sources */,
 				D13116B01A03B33D00DE1322 /* C_INTEGER.cpp in Sources */,
 				D13116A91A03ACB700DE1322 /* 4DPluginAPI.c in Sources */,
+				D1F77C681FD054AB001CA181 /* twain_dsm.cpp in Sources */,
 				D13116E21A03BC1100DE1322 /* ARRAY_BOOLEAN.cpp in Sources */,
 				D13116BA1A03B3C300DE1322 /* C_REAL.cpp in Sources */,
 				D13116F41A03C7AF00DE1322 /* ARRAY_DATE.cpp in Sources */,
+				D1F77C601FD04D36001CA181 /* twain_jpg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
