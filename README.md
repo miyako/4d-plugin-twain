@@ -67,6 +67,8 @@ setting|TEXT|``JSON``
 format|LONGINT|``Scanner image type JPEG`` or ``Scanner image type PNG``
 images|ARRAY PICTURE|
 
+for efficiency, pass a subset of the setting object that contains properties that are different from the default values.
+
 empty string specified the default scanner.
 
 on windows the call is executed in a new thread with [``_beginthreadex``](https://msdn.microsoft.com/en-us/library/kdzttdcb.aspx)
