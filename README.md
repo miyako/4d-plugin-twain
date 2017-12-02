@@ -52,6 +52,8 @@ only features included in ``CAP_SUPPORTEDCAPS`` are returned. ``setting`` is the
 
 empty string specified the default scanner.
 
+on windows the call is executed in a new thread with [``_beginthreadex``](https://msdn.microsoft.com/en-us/library/kdzttdcb.aspx)
+
 the device must be online to retrive values.
 
 ```
