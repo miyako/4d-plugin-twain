@@ -27,6 +27,7 @@ Properties of ``scanners{0}``
 Manufacturer : string
 ProductFamily : string
 ProductName : string
+SupportGroup : number
 Version:
   Info : string
   MinorNum : number
