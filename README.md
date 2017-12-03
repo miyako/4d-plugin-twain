@@ -1,6 +1,10 @@
 # 4d-plugin-twain
 [TWAIN](http://www.twain.org) client for Windows and macOS
 
+[twain-dsm](https://github.com/twain/twain-dsm) is used for Windows. (native ``TWAIN_32.DLL``is 32-bit only)
+
+``TWAIN.framework`` is used for macOS. see also [4d-plugin-ica](https://github.com/miyako/4d-plugin-ica).
+
 ### Platform
 
 | carbon | cocoa | win32 | win64 |
