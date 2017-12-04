@@ -159,9 +159,6 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 	"CAP_SERIALNUMBER": {
 		"itemType": "TWON_ONEVALUE"
 	},
-	"": {
-		"itemType": "TWON_ONEVALUE"
-	},
 	"ICAP_AUTOBRIGHT": {
 		"values": [
 			true,
