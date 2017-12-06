@@ -5,7 +5,7 @@
 
 ``TWAIN.framework`` is used for macOS. see also [4d-plugin-ica](https://github.com/miyako/4d-plugin-ica).
 
-**Note**: some drivers support various image file formats via file transfer. this feature is not supported. ``JPG`` and ``PNG`` are created by the plugin from bitmap data.
+**Note**: some drivers support various image file formats via file transfer. this feature is not supported. ``JPG`` and ``PNG`` are created by the plugin from bitmap data (``DAT_IMAGEMEMXFER``).
 
 ### Platform
 
