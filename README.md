@@ -92,7 +92,7 @@ OB SET($settings;"ICAP_PIXELTYPE";"TWPT_GRAY")
 TWAIN SCAN ("HP OfficeJet Pro 6970 TWAIN";JSON Stringify($settings);Scanner image type JPEG;$images)
 
 WRITE PICTURE FILE(System folder(Desktop)+"test.jpg";$images{1})
-``
+```
 
 ---
 
