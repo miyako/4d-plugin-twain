@@ -83,6 +83,8 @@ empty string specifies the default scanner.
 
 on windows the call is executed in a new thread with [``_beginthreadex``](https://msdn.microsoft.com/en-us/library/kdzttdcb.aspx)
 
+---
+
 * e.g. Scan grayscale JPEG
 
 ```
@@ -93,8 +95,6 @@ TWAIN SCAN ("HP OfficeJet Pro 6970 TWAIN";JSON Stringify($settings);Scanner imag
 
 WRITE PICTURE FILE(System folder(Desktop)+"test.jpg";$images{1})
 ```
-
----
 
 * Sample ``setting`` object (custom ``CAP`` are given in their literal values)
 
