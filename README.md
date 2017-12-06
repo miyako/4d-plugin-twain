@@ -79,26 +79,39 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 
 ---
 
-* Sample ``setting`` object
+* Sample ``setting`` object (custom ``CAP`` are given in their literal values)
 
 ```json
 {
+	"32769": true,
+	"32784": true,
+	"32785": true,
+	"32786": 1,
+	"32787": 1,
+	"32788": 1,
+	"32789": 1,
+	"32790": 65536,
+	"32791": 65536,
 	"CAP_DEVICEONLINE": true,
 	"CAP_ENABLEDSUIONLY": true,
 	"CAP_UICONTROLLABLE": true,
-	"CAP_SERIALNUMBER": "TH78N1Q20C",
+	"CAP_CUSTOMINTERFACEGUID": {},
 	"ICAP_AUTOBRIGHT": true,
 	"ICAP_UNDEFINEDIMAGESIZE": true,
+	"ICAP_AUTODISCARDBLANKPAGES": "TWBP_DISABLE",
 	"ICAP_AUTOMATICBORDERDETECTION": true,
 	"ICAP_AUTOMATICDESKEW": true,
 	"ICAP_AUTOMATICROTATE": true,
+	"ICAP_AUTOMATICCOLORENABLED": true,
+	"ICAP_AUTOMATICCOLORNONCOLORPIXELTYPE": 0,
 	"ICAP_BITDEPTHREDUCTION": "TWBR_THRESHOLD",
-	"ICAP_HALFTONES": "Default Dither",
+	"ICAP_HALFTONES": {},
 	"ICAP_BITORDER": "TWBO_MSBFIRST",
 	"ICAP_COMPRESSION": "TWCP_NONE",
 	"ICAP_JPEGPIXELTYPE": 2,
 	"ICAP_JPEGQUALITY": "",
 	"ICAP_IMAGEFILEFORMAT": "TWFF_BMP",
+	"ICAP_IMAGEMERGE": "TWIM_NONE",
 	"ICAP_PLANARCHUNKY": "TWPC_CHUNKY",
 	"CAP_INDICATORS": true,
 	"ICAP_PIXELFLAVOR": "TWPF_CHOCOLATE",
@@ -111,6 +124,7 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 	"CAP_FEEDERALIGNMENT": "TWFA_LEFT",
 	"CAP_FEEDERORDER": "TWFO_FIRSTPAGEFIRST",
 	"CAP_REACQUIREALLOWED": false,
+	"CAP_AUTOMATICSENSEMEDIUM": true,
 	"CAP_FEEDERLOADED": true,
 	"CAP_PAPERDETECTABLE": true,
 	"CAP_DUPLEX": "TWDX_2PASSDUPLEX",
@@ -137,6 +151,54 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 
 ```json
 {
+	"32769": {
+		"values": [
+			true,
+			false
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
+	"32784": {
+		"values": [
+			true,
+			false
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
+	"32785": {
+		"values": [
+			true,
+			false
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
+	"32786": {
+		"itemType": "TWON_ONEVALUE"
+	},
+	"32787": {
+		"itemType": "TWON_ONEVALUE"
+	},
+	"32788": {
+		"itemType": "TWON_ONEVALUE"
+	},
+	"32789": {
+		"itemType": "TWON_ONEVALUE"
+	},
+	"32790": {
+		"values": [
+			0,
+			1,
+			2
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
+	"32791": {
+		"values": [
+			0,
+			1
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
 	"CAP_DEVICEONLINE": {
 		"values": [
 			true,
@@ -156,7 +218,7 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 		],
 		"itemType": "TWON_ENUMERATION"
 	},
-	"CAP_SERIALNUMBER": {
+	"CAP_CUSTOMINTERFACEGUID": {
 		"itemType": "TWON_ONEVALUE"
 	},
 	"ICAP_AUTOBRIGHT": {
@@ -172,6 +234,13 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 			false
 		],
 		"itemType": "TWON_ENUMERATION"
+	},
+	"ICAP_AUTODISCARDBLANKPAGES": {
+		"itemType": "TWON_RANGE",
+		"minValue": -2,
+		"maxValue": 2147483647,
+		"stepSize": 1,
+		"defaultValue": -2
 	},
 	"ICAP_AUTOMATICBORDERDETECTION": {
 		"values": [
@@ -191,6 +260,20 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 		"values": [
 			true,
 			false
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
+	"ICAP_AUTOMATICCOLORENABLED": {
+		"values": [
+			true,
+			false
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
+	"ICAP_AUTOMATICCOLORNONCOLORPIXELTYPE": {
+		"values": [
+			0,
+			1
 		],
 		"itemType": "TWON_ENUMERATION"
 	},
@@ -240,6 +323,16 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 			"TWFF_JFIF",
 			"TWFF_PNG",
 			"TWFF_TIFF"
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
+	"ICAP_IMAGEMERGE": {
+		"values": [
+			"TWIM_NONE",
+			"TWIM_FRONTONLEFT",
+			"TWIM_FRONTONRIGHT",
+			"TWIM_FRONTONTOP",
+			"TWIM_FRONTONBOTTOM"
 		],
 		"itemType": "TWON_ENUMERATION"
 	},
@@ -311,6 +404,13 @@ on windows the call is executed in a new thread with [``_beginthreadex``](https:
 	},
 	"CAP_REACQUIREALLOWED": {
 		"values": [
+			false
+		],
+		"itemType": "TWON_ENUMERATION"
+	},
+	"CAP_AUTOMATICSENSEMEDIUM": {
+		"values": [
+			true,
 			false
 		],
 		"itemType": "TWON_ENUMERATION"
