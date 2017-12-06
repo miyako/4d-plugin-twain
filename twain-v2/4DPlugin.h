@@ -15,10 +15,12 @@
 #define PRODUCT_NAME "4D"
 
 #define CMD_Get_database_localization 1009
+#if VERSIONMAC
+#include <sstream>
+#endif
 
 #include "twain_jpg.h"
 #include "twain_png.h"
-
 #include "twain_json.h"
 // --- TWAIN
 void TWAIN_SCANNERS_LIST(sLONG_PTR *pResult, PackagePtr pParams);

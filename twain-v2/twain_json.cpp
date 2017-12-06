@@ -1918,178 +1918,180 @@ void twain_get_capability_value(TW_CAPABILITY *tw_capability, void *p, JSONNODE 
 		}
 			break;
 		default:
-		{
-			//generic
-			switch(conType)
-			{
-				case TWON_ARRAY:
-					string_or_constant_value = FALSE;
-					break;
-				case TWON_ENUMERATION:
-					switch(pENUMERATION->ItemType)
-				{
-					case TWTY_FIX32:
-					{
-						string_or_constant_value = FALSE;
-						pTW_FIX32 pFix32 = &((pTW_FIX32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						json_set_f(json_scanner_option, float(pFix32->Whole) + float(pFix32->Frac / 65536.0));
-					}
-						break;
-					case TWTY_FRAME:
-					{
-						pTW_FRAME pframe = &((pTW_FRAME)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						sprintf(str, "%d.%u,%d.%u,%d.%u,%d.%u",
-										pframe->Top.Whole, pframe->Top.Frac,
-										pframe->Left.Whole, pframe->Left.Frac,
-										pframe->Right.Whole, pframe->Right.Frac,
-										pframe->Bottom.Whole, pframe->Bottom.Frac);
-					}
-						break;
-					case TWTY_INT8:
-					case TWTY_INT16:
-					case TWTY_INT32:
-					{
-						string_or_constant_value = FALSE;
-						TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						json_set_i(json_scanner_option, currentValue);
-					}
-						break;
-					case TWTY_UINT8:
-					case TWTY_UINT16:
-					case TWTY_UINT32:
-					{
-						string_or_constant_value = FALSE;
-						TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						json_set_i(json_scanner_option, currentValue);
-					}
-						break;
-					case TWTY_BOOL:
-					{
-						string_or_constant_value = FALSE;
-						TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						json_set_b(json_scanner_option, currentValue);
-					}
-						break;
-					case TWTY_STR32:
-					{
-						pTW_STR32 pStr32 = &((pTW_STR32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						sprintf(str, "%s", pStr32);
-					}
-						break;
-					case TWTY_STR64:
-					{
-						pTW_STR64 pStr64 = &((pTW_STR64)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						sprintf(str, "%s", pStr64);
-					}
-						break;
-					case TWTY_STR128:
-					{
-						pTW_STR128 pStr128 = &((pTW_STR128)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						sprintf(str, "%s", pStr128);
-					}
-						break;
-					case TWTY_STR255:
-					{
-						pTW_STR255 pStr255 = &((pTW_STR255)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
-						sprintf(str, "%s", pStr255);
-					}
-						break;
-						//					case TWTY_STR1024:
-						//					case TWTY_UNI512:
-						//						break;
-					default:
-						break;
-				}
-					break;
-				case TWON_ONEVALUE:
-					switch(pONEVALUE->ItemType)
-				{
-					case TWTY_FIX32:
-					{
-						string_or_constant_value = FALSE;
-						pTW_FIX32 pFix32 = (pTW_FIX32)&pONEVALUE->Item;
-						json_set_f(json_scanner_option, float(pFix32->Whole) + float(pFix32->Frac / 65536.0));
-					}
-						break;
-					case TWTY_FRAME:
-					{
-						pTW_FRAME pframe = (pTW_FRAME)&pONEVALUE->Item;
-						sprintf(str, "%d.%u,%d.%u,%d.%u,%d.%u",
-										pframe->Top.Whole, pframe->Top.Frac,
-										pframe->Left.Whole, pframe->Left.Frac,
-										pframe->Right.Whole, pframe->Right.Frac,
-										pframe->Bottom.Whole, pframe->Bottom.Frac);
-					}
-						break;
-					case TWTY_INT8:
-					case TWTY_INT16:
-					case TWTY_INT32:
-					{
-						string_or_constant_value = FALSE;
-						TW_UINT32 currentValue = pONEVALUE->Item;
-						json_set_i(json_scanner_option, currentValue);
-					}
-						break;
-					case TWTY_UINT8:
-					case TWTY_UINT16:
-					case TWTY_UINT32:
-					{
-						string_or_constant_value = FALSE;
-						TW_UINT32 currentValue = pONEVALUE->Item;
-						json_set_i(json_scanner_option, currentValue);
-					}
-						break;
-					case TWTY_BOOL:
-					{
-						string_or_constant_value = FALSE;
-						TW_UINT32 currentValue = pONEVALUE->Item;
-						json_set_b(json_scanner_option, currentValue);
-					}
-						break;
-					case TWTY_STR32:
-					{
-						pTW_STR32 pStr32 = (pTW_STR32)&pONEVALUE->Item;
-						sprintf(str, "%s", pStr32);
-					}
-						break;
-					case TWTY_STR64:
-					{
-						pTW_STR64 pStr64 = (pTW_STR64)&pONEVALUE->Item;
-						sprintf(str, "%s", pStr64);
-					}
-						break;
-					case TWTY_STR128:
-					{
-						pTW_STR128 pStr128 = (pTW_STR128)&pONEVALUE->Item;
-						sprintf(str, "%s", pStr128);
-					}
-						break;
-					case TWTY_STR255:
-					{
-						pTW_STR255 pStr255 = (pTW_STR255)&pONEVALUE->Item;
-						sprintf(str, "%s", pStr255);
-					}
-						break;
-						//					case TWTY_STR1024:
-						//					case TWTY_UNI512:
-						//						break;
-					default:
-						break;
-				}
-					break;
-				case TWON_RANGE:
-					string_or_constant_value = FALSE;
-					TW_UINT32 currentValue = pRANGE->CurrentValue;
-					json_set_i(json_scanner_option, currentValue);
-					break;
-			}
-		}
+			string_or_constant_value = FALSE;
 			break;
 	}
 	
 	if(string_or_constant_value)
 	{
 		json_set_s(json_scanner_option, str);
+	}
+	else
+	{
+		//generic
+		switch (conType)
+		{
+		case TWON_ARRAY:
+			string_or_constant_value = FALSE;
+			break;
+		case TWON_ENUMERATION:
+			switch (pENUMERATION->ItemType)
+			{
+			case TWTY_FIX32:
+			{
+				string_or_constant_value = FALSE;
+				pTW_FIX32 pFix32 = &((pTW_FIX32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				json_set_f(json_scanner_option, float(pFix32->Whole) + float(pFix32->Frac / 65536.0));
+			}
+			break;
+			case TWTY_FRAME:
+			{
+				pTW_FRAME pframe = &((pTW_FRAME)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				sprintf(str, "%d.%u,%d.%u,%d.%u,%d.%u",
+					pframe->Top.Whole, pframe->Top.Frac,
+					pframe->Left.Whole, pframe->Left.Frac,
+					pframe->Right.Whole, pframe->Right.Frac,
+					pframe->Bottom.Whole, pframe->Bottom.Frac);
+			}
+			break;
+			case TWTY_INT8:
+			case TWTY_INT16:
+			case TWTY_INT32:
+			{
+				string_or_constant_value = FALSE;
+				TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				json_set_i(json_scanner_option, currentValue);
+			}
+			break;
+			case TWTY_UINT8:
+			case TWTY_UINT16:
+			case TWTY_UINT32:
+			{
+				string_or_constant_value = FALSE;
+				TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				json_set_i(json_scanner_option, currentValue);
+			}
+			break;
+			case TWTY_BOOL:
+			{
+				string_or_constant_value = FALSE;
+				TW_UINT32 currentValue = ((pTW_UINT32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				json_set_b(json_scanner_option, currentValue);
+			}
+			break;
+			case TWTY_STR32:
+			{
+				pTW_STR32 pStr32 = &((pTW_STR32)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				sprintf(str, "%s", pStr32);
+			}
+			break;
+			case TWTY_STR64:
+			{
+				pTW_STR64 pStr64 = &((pTW_STR64)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				sprintf(str, "%s", pStr64);
+			}
+			break;
+			case TWTY_STR128:
+			{
+				pTW_STR128 pStr128 = &((pTW_STR128)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				sprintf(str, "%s", pStr128);
+			}
+			break;
+			case TWTY_STR255:
+			{
+				pTW_STR255 pStr255 = &((pTW_STR255)(&pENUMERATION->ItemList))[pENUMERATION->CurrentIndex];
+				sprintf(str, "%s", pStr255);
+			}
+			break;
+			//					case TWTY_STR1024:
+			//					case TWTY_UNI512:
+			//						break;
+			default:
+				break;
+			}
+			break;
+		case TWON_ONEVALUE:
+			switch (pONEVALUE->ItemType)
+			{
+			case TWTY_FIX32:
+			{
+				string_or_constant_value = FALSE;
+				pTW_FIX32 pFix32 = (pTW_FIX32)&pONEVALUE->Item;
+				json_set_f(json_scanner_option, float(pFix32->Whole) + float(pFix32->Frac / 65536.0));
+			}
+			break;
+			case TWTY_FRAME:
+			{
+				pTW_FRAME pframe = (pTW_FRAME)&pONEVALUE->Item;
+				sprintf(str, "%d.%u,%d.%u,%d.%u,%d.%u",
+					pframe->Top.Whole, pframe->Top.Frac,
+					pframe->Left.Whole, pframe->Left.Frac,
+					pframe->Right.Whole, pframe->Right.Frac,
+					pframe->Bottom.Whole, pframe->Bottom.Frac);
+			}
+			break;
+			case TWTY_INT8:
+			case TWTY_INT16:
+			case TWTY_INT32:
+			{
+				string_or_constant_value = FALSE;
+				TW_UINT32 currentValue = pONEVALUE->Item;
+				json_set_i(json_scanner_option, currentValue);
+			}
+			break;
+			case TWTY_UINT8:
+			case TWTY_UINT16:
+			case TWTY_UINT32:
+			{
+				string_or_constant_value = FALSE;
+				TW_UINT32 currentValue = pONEVALUE->Item;
+				json_set_i(json_scanner_option, currentValue);
+			}
+			break;
+			case TWTY_BOOL:
+			{
+				string_or_constant_value = FALSE;
+				TW_UINT32 currentValue = pONEVALUE->Item;
+				json_set_b(json_scanner_option, currentValue);
+			}
+			break;
+			case TWTY_STR32:
+			{
+				pTW_STR32 pStr32 = (pTW_STR32)&pONEVALUE->Item;
+				sprintf(str, "%s", pStr32);
+			}
+			break;
+			case TWTY_STR64:
+			{
+				pTW_STR64 pStr64 = (pTW_STR64)&pONEVALUE->Item;
+				sprintf(str, "%s", pStr64);
+			}
+			break;
+			case TWTY_STR128:
+			{
+				pTW_STR128 pStr128 = (pTW_STR128)&pONEVALUE->Item;
+				sprintf(str, "%s", pStr128);
+			}
+			break;
+			case TWTY_STR255:
+			{
+				pTW_STR255 pStr255 = (pTW_STR255)&pONEVALUE->Item;
+				sprintf(str, "%s", pStr255);
+			}
+			break;
+			//					case TWTY_STR1024:
+			//					case TWTY_UNI512:
+			//						break;
+			default:
+				break;
+			}
+			break;
+		case TWON_RANGE:
+			string_or_constant_value = FALSE;
+			TW_UINT32 currentValue = pRANGE->CurrentValue;
+			json_set_i(json_scanner_option, currentValue);
+			break;
+		}
 	}
 	
 }
@@ -2525,6 +2527,90 @@ void twain_get_capability_option_name(TW_UINT16 cap, std::wstring &stringValue)
 		case CAP_BATTERYPERCENTAGE:
 			stringValue = L"CAP_BATTERYPERCENTAGE";
 			break;
+			/* was missing */
+#if USE_TWAIN_DSM
+		case CAP_CAMERASIDE:
+			stringValue = L"CAP_CAMERASIDE";
+			break;
+		case CAP_SEGMENTED:
+			stringValue = L"CAP_SEGMENTED";
+			break;
+		case CAP_CAMERAENABLED:
+			stringValue = L"CAP_CAMERAENABLED";
+			break;
+		case CAP_CAMERAORDER:
+			stringValue = L"CAP_CAMERAORDER";
+			break;
+		case CAP_MICRENABLED:
+			stringValue = L"CAP_MICRENABLED";
+			break;
+		case CAP_FEEDERPREP:
+			stringValue = L"CAP_FEEDERPREP";
+			break;
+		case CAP_FEEDERPOCKET:
+			stringValue = L"CAP_FEEDERPOCKET";
+			break;
+		case CAP_AUTOMATICSENSEMEDIUM:
+			stringValue = L"CAP_AUTOMATICSENSEMEDIUM";
+			break;
+		case CAP_CUSTOMINTERFACEGUID:
+			stringValue = L"CAP_CUSTOMINTERFACEGUID";
+			break;
+		case CAP_SUPPORTEDCAPSSEGMENTUNIQUE:
+			stringValue = L"CAP_SUPPORTEDCAPSSEGMENTUNIQUE";
+			break;
+		case CAP_SUPPORTEDDATS:
+			stringValue = L"CAP_SUPPORTEDDATS";
+			break;
+		case CAP_DOUBLEFEEDDETECTION:
+			stringValue = L"CAP_DOUBLEFEEDDETECTION";
+			break;
+		case CAP_DOUBLEFEEDDETECTIONLENGTH:
+			stringValue = L"CAP_DOUBLEFEEDDETECTIONLENGTH";
+			break;
+		case CAP_DOUBLEFEEDDETECTIONSENSITIVITY:
+			stringValue = L"CAP_DOUBLEFEEDDETECTIONSENSITIVITY";
+			break;
+		case CAP_DOUBLEFEEDDETECTIONRESPONSE:
+			stringValue = L"CAP_DOUBLEFEEDDETECTIONRESPONSE";
+			break;
+		case CAP_PAPERHANDLING:
+			stringValue = L"CAP_PAPERHANDLING";
+			break;
+		case CAP_INDICATORSMODE:
+			stringValue = L"CAP_INDICATORSMODE";
+			break;
+		case CAP_PRINTERVERTICALOFFSET:
+			stringValue = L"CAP_PRINTERVERTICALOFFSET";
+			break;
+		case CAP_POWERSAVETIME:
+			stringValue = L"CAP_POWERSAVETIME";
+			break;
+		case CAP_PRINTERCHARROTATION:
+			stringValue = L"CAP_PRINTERCHARROTATION";
+			break;
+		case CAP_PRINTERFONTSTYLE:
+			stringValue = L"CAP_PRINTERFONTSTYLE";
+			break;
+		case CAP_PRINTERINDEXLEADCHAR:
+			stringValue = L"CAP_PRINTERINDEXLEADCHAR";
+			break;
+		case CAP_PRINTERINDEXMAXVALUE:
+			stringValue = L"CAP_PRINTERINDEXMAXVALUE";
+			break;
+		case CAP_PRINTERINDEXNUMDIGITS:
+			stringValue = L"CAP_PRINTERINDEXNUMDIGITS";
+			break;
+		case CAP_PRINTERINDEXSTEP:
+			stringValue = L"CAP_PRINTERINDEXSTEP";
+			break;
+		case CAP_PRINTERINDEXTRIGGER:
+			stringValue = L"CAP_PRINTERINDEXTRIGGER";
+			break;
+		case CAP_PRINTERSTRINGPREVIEW:
+			stringValue = L"CAP_PRINTERSTRINGPREVIEW";
+			break;
+#endif
 		case ICAP_AUTOBRIGHT:
 			stringValue = L"ICAP_AUTOBRIGHT";
 			break;
@@ -2732,6 +2818,64 @@ void twain_get_capability_option_name(TW_UINT16 cap, std::wstring &stringValue)
 		case ICAP_JPEGQUALITY:
 			stringValue = L"ICAP_JPEGQUALITY";
 			break;
+#if USE_TWAIN_DSM
+		case ICAP_AUTODISCARDBLANKPAGES:
+			stringValue = L"ICAP_AUTODISCARDBLANKPAGES";
+			break;
+		case ICAP_FEEDERTYPE:
+			stringValue = L"ICAP_FEEDERTYPE";
+			break;
+		case ICAP_ICCPROFILE:
+			stringValue = L"ICAP_ICCPROFILE";
+			break;
+		case ICAP_AUTOSIZE:
+			stringValue = L"ICAP_AUTOSIZE";
+			break;
+		case ICAP_AUTOMATICCROPUSESFRAME:
+			stringValue = L"ICAP_AUTOMATICCROPUSESFRAME";
+			break;
+		case ICAP_AUTOMATICLENGTHDETECTION:
+			stringValue = L"ICAP_AUTOMATICLENGTHDETECTION";
+			break;
+		case ICAP_AUTOMATICCOLORENABLED:
+			stringValue = L"ICAP_AUTOMATICCOLORENABLED";
+			break;
+		case ICAP_AUTOMATICCOLORNONCOLORPIXELTYPE:
+			stringValue = L"ICAP_AUTOMATICCOLORNONCOLORPIXELTYPE";
+			break;
+		case ICAP_COLORMANAGEMENTENABLED:
+			stringValue = L"ICAP_COLORMANAGEMENTENABLED";
+			break;
+		case ICAP_IMAGEMERGE:
+			stringValue = L"ICAP_IMAGEMERGE";
+			break;
+		case ICAP_IMAGEMERGEHEIGHTTHRESHOLD:
+			stringValue = L"ICAP_IMAGEMERGEHEIGHTTHRESHOLD";
+			break;
+		case ICAP_SUPPORTEDEXTIMAGEINFO:
+			stringValue = L"ICAP_SUPPORTEDEXTIMAGEINFO";
+			break;
+		case ICAP_FILMTYPE:
+			stringValue = L"ICAP_FILMTYPE";
+			break;
+		case ICAP_MIRROR:
+			stringValue = L"ICAP_MIRROR";
+			break;
+		case ICAP_JPEGSUBSAMPLING:
+			stringValue = L"ICAP_JPEGSUBSAMPLING";
+			break;
+#endif
+		default:
+		{
+			wchar_t buf[33];
+#if VERSIONWIN
+			stringValue = _itow(cap, buf, 10);
+#else
+			swprintf(buf, 33, L"%d", cap);
+			stringValue = buf;
+#endif
+		}
+			break;
 	}
 }
 
@@ -2776,503 +2920,677 @@ void twain_get_option_value(TW_IDENTITY *tw_identity,
 	json_push_back(json_scanner_options, json_scanner_option);
 }
 
-TW_UINT16 json_get_cap(JSONNODE *n)
+TW_UINT16 json_get_cap(json_char *name)
 {
 	TW_UINT16 cap = 0;
+
+#if VERSIONWIN
+	cap = _wtoi(name);
+#else
+	std::wstringstream conv;
+	conv << name;
+	conv >> cap;
+#endif
 	
-	json_char *s = json_as_string(n);
-	if(s)
+	std::wstring s = std::wstring((const wchar_t *)name);
+	
+	if (s.compare(L"CAP_XFERCOUNT") == 0)
 	{
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_XFERCOUNT")
-		{
-			cap = CAP_XFERCOUNT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_COMPRESSION")
-		{
-			cap = ICAP_COMPRESSION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PIXELTYPE")
-		{
-			cap = ICAP_PIXELTYPE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_UNITS")
-		{
-			cap = ICAP_UNITS;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_XFERMECH")
-		{
-			cap = ICAP_XFERMECH;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_AUTHOR")
-		{
-			cap = CAP_AUTHOR;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_CAPTION")
-		{
-			cap = CAP_CAPTION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_FEEDERENABLED")
-		{
-			cap = CAP_FEEDERENABLED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_FEEDERLOADED")
-		{
-			cap = CAP_FEEDERLOADED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_TIMEDATE")
-		{
-			cap = CAP_TIMEDATE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_SUPPORTEDCAPS")
-		{
-			cap = CAP_SUPPORTEDCAPS;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_EXTENDEDCAPS")
-		{
-			cap = CAP_EXTENDEDCAPS;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_AUTOFEED")
-		{
-			cap = CAP_AUTOFEED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_CLEARPAGE")
-		{
-			cap = CAP_CLEARPAGE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_FEEDPAGE")
-		{
-			cap = CAP_FEEDPAGE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_REWINDPAGE")
-		{
-			cap = CAP_REWINDPAGE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_INDICATORS")
-		{
-			cap = CAP_INDICATORS;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_SUPPORTEDCAPSEXT")
-		{
-			cap = CAP_SUPPORTEDCAPSEXT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_PAPERDETECTABLE")
-		{
-			cap = CAP_PAPERDETECTABLE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_UICONTROLLABLE")
-		{
-			cap = CAP_UICONTROLLABLE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_DEVICEONLINE")
-		{
-			cap = CAP_DEVICEONLINE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_AUTOSCAN")
-		{
-			cap = CAP_AUTOSCAN;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_THUMBNAILSENABLED")
-		{
-			cap = CAP_THUMBNAILSENABLED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_DUPLEX")
-		{
-			cap = CAP_DUPLEX;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_DUPLEXENABLED")
-		{
-			cap = CAP_DUPLEXENABLED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_ENABLEDSUIONLY")
-		{
-			cap = CAP_ENABLEDSUIONLY;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_CUSTOMDSDATA")
-		{
-			cap = CAP_CUSTOMDSDATA;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_ENDORSER")
-		{
-			cap = CAP_ENDORSER;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_JOBCONTROL")
-		{
-			cap = CAP_JOBCONTROL;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_ALARMS")
-		{
-			cap = CAP_ALARMS;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_ALARMVOLUME")
-		{
-			cap = CAP_ALARMVOLUME;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_AUTOMATICCAPTURE")
-		{
-			cap = CAP_AUTOMATICCAPTURE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_TIMEBEFOREFIRSTCAPTURE")
-		{
-			cap = CAP_TIMEBEFOREFIRSTCAPTURE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_TIMEBETWEENCAPTURES")
-		{
-			cap = CAP_TIMEBETWEENCAPTURES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_CLEARBUFFERS")
-		{
-			cap = CAP_CLEARBUFFERS;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_MAXBATCHBUFFERS")
-		{
-			cap = CAP_MAXBATCHBUFFERS;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_DEVICETIMEDATE")
-		{
-			cap = CAP_DEVICETIMEDATE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_POWERSUPPLY")
-		{
-			cap = CAP_POWERSUPPLY;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_CAMERAPREVIEWUI")
-		{
-			cap = CAP_CAMERAPREVIEWUI;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_DEVICEEVENT")
-		{
-			cap = CAP_DEVICEEVENT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_SERIALNUMBER")
-		{
-			cap = CAP_SERIALNUMBER;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_PRINTER")
-		{
-			cap = CAP_PRINTER;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_PRINTERENABLED")
-		{
-			cap = CAP_PRINTERENABLED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_PRINTERINDEX")
-		{
-			cap = CAP_PRINTERINDEX;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_PRINTERMODE")
-		{
-			cap = CAP_PRINTERMODE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_PRINTERSTRING")
-		{
-			cap = CAP_PRINTERSTRING;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_PRINTERSUFFIX")
-		{
-			cap = CAP_PRINTERSUFFIX;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_LANGUAGE")
-		{
-			cap = CAP_LANGUAGE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_FEEDERALIGNMENT")
-		{
-			cap = CAP_FEEDERALIGNMENT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_FEEDERORDER")
-		{
-			cap = CAP_FEEDERORDER;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_REACQUIREALLOWED")
-		{
-			cap = CAP_REACQUIREALLOWED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_BATTERYMINUTES")
-		{
-			cap = CAP_BATTERYMINUTES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"CAP_BATTERYPERCENTAGE")
-		{
-			cap = CAP_BATTERYPERCENTAGE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_AUTOBRIGHT")
-		{
-			cap = ICAP_AUTOBRIGHT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BRIGHTNESS")
-		{
-			cap = ICAP_BRIGHTNESS;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_CONTRAST")
-		{
-			cap = ICAP_CONTRAST;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_CUSTHALFTONE")
-		{
-			cap = ICAP_CUSTHALFTONE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_EXPOSURETIME")
-		{
-			cap = ICAP_EXPOSURETIME;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_FILTER")
-		{
-			cap = ICAP_FILTER;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_FLASHUSED")
-		{
-			cap = ICAP_FLASHUSED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_GAMMA")
-		{
-			cap = ICAP_GAMMA;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_HALFTONES")
-		{
-			cap = ICAP_HALFTONES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_HIGHLIGHT")
-		{
-			cap = ICAP_HIGHLIGHT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_IMAGEFILEFORMAT")
-		{
-			cap = ICAP_IMAGEFILEFORMAT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_LAMPSTATE")
-		{
-			cap = ICAP_LAMPSTATE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_LIGHTSOURCE")
-		{
-			cap = ICAP_LIGHTSOURCE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_ORIENTATION")
-		{
-			cap = ICAP_ORIENTATION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PHYSICALWIDTH")
-		{
-			cap = ICAP_PHYSICALWIDTH;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PHYSICALHEIGHT")
-		{
-			cap = ICAP_PHYSICALHEIGHT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_SHADOW")
-		{
-			cap = ICAP_SHADOW;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_FRAMES")
-		{
-			cap = ICAP_FRAMES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_XNATIVERESOLUTION")
-		{
-			cap = ICAP_XNATIVERESOLUTION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_YNATIVERESOLUTION")
-		{
-			cap = ICAP_YNATIVERESOLUTION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_XRESOLUTION")
-		{
-			cap = ICAP_XRESOLUTION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_YRESOLUTION")
-		{
-			cap = ICAP_YRESOLUTION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_MAXFRAMES")
-		{
-			cap = ICAP_MAXFRAMES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_TILES")
-		{
-			cap = ICAP_TILES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BITORDER")
-		{
-			cap = ICAP_BITORDER;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_CCITTKFACTOR")
-		{
-			cap = ICAP_CCITTKFACTOR;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_LIGHTPATH")
-		{
-			cap = ICAP_LIGHTPATH;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PIXELFLAVOR")
-		{
-			cap = ICAP_PIXELFLAVOR;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PLANARCHUNKY")
-		{
-			cap = ICAP_PLANARCHUNKY;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_ROTATION")
-		{
-			cap = ICAP_ROTATION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_SUPPORTEDSIZES")
-		{
-			cap = ICAP_SUPPORTEDSIZES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_THRESHOLD")
-		{
-			cap = ICAP_THRESHOLD;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_XSCALING")
-		{
-			cap = ICAP_XSCALING;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_YSCALING")
-		{
-			cap = ICAP_YSCALING;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BITORDERCODES")
-		{
-			cap = ICAP_BITORDERCODES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PIXELFLAVORCODES")
-		{
-			cap = ICAP_PIXELFLAVORCODES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_JPEGPIXELTYPE")
-		{
-			cap = ICAP_JPEGPIXELTYPE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_TIMEFILL")
-		{
-			cap = ICAP_TIMEFILL;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BITDEPTH")
-		{
-			cap = ICAP_BITDEPTH;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BITDEPTHREDUCTION")
-		{
-			cap = ICAP_BITDEPTHREDUCTION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_UNDEFINEDIMAGESIZE")
-		{
-			cap = ICAP_UNDEFINEDIMAGESIZE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_IMAGEDATASET")
-		{
-			cap = ICAP_IMAGEDATASET;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_EXTIMAGEINFO")
-		{
-			cap = ICAP_EXTIMAGEINFO;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_MINIMUMHEIGHT")
-		{
-			cap = ICAP_MINIMUMHEIGHT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_MINIMUMWIDTH")
-		{
-			cap = ICAP_MINIMUMWIDTH;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_FLIPROTATION")
-		{
-			cap = ICAP_FLIPROTATION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BARCODEDETECTIONENABLED")
-		{
-			cap = ICAP_BARCODEDETECTIONENABLED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_SUPPORTEDBARCODETYPES")
-		{
-			cap = ICAP_SUPPORTEDBARCODETYPES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BARCODEMAXSEARCHPRIORITIES")
-		{
-			cap = ICAP_BARCODEMAXSEARCHPRIORITIES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BARCODESEARCHPRIORITIES")
-		{
-			cap = ICAP_BARCODESEARCHPRIORITIES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BARCODESEARCHMODE")
-		{
-			cap = ICAP_BARCODESEARCHMODE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BARCODEMAXRETRIES")
-		{
-			cap = ICAP_BARCODEMAXRETRIES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_BARCODETIMEOUT")
-		{
-			cap = ICAP_BARCODETIMEOUT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_ZOOMFACTOR")
-		{
-			cap = ICAP_ZOOMFACTOR;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PATCHCODEDETECTIONENABLED")
-		{
-			cap = ICAP_PATCHCODEDETECTIONENABLED;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_SUPPORTEDPATCHCODETYPES")
-		{
-			cap = ICAP_SUPPORTEDPATCHCODETYPES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PATCHCODEMAXSEARCHPRIORITIES")
-		{
-			cap = ICAP_PATCHCODEMAXSEARCHPRIORITIES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PATCHCODESEARCHPRIORITIES")
-		{
-			cap = ICAP_PATCHCODESEARCHPRIORITIES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PATCHCODESEARCHMODE")
-		{
-			cap = ICAP_PATCHCODESEARCHMODE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PATCHCODEMAXRETRIES")
-		{
-			cap = ICAP_PATCHCODEMAXRETRIES;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_PATCHCODETIMEOUT")
-		{
-			cap = ICAP_PATCHCODETIMEOUT;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_FLASHUSED2")
-		{
-			cap = ICAP_FLASHUSED2;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_IMAGEFILTER")
-		{
-			cap = ICAP_IMAGEFILTER;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_NOISEFILTER")
-		{
-			cap = ICAP_NOISEFILTER;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_OVERSCAN")
-		{
-			cap = ICAP_OVERSCAN;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_AUTOMATICBORDERDETECTION")
-		{
-			cap = ICAP_AUTOMATICBORDERDETECTION;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_AUTOMATICDESKEW")
-		{
-			cap = ICAP_AUTOMATICDESKEW;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_AUTOMATICROTATE")
-		{
-			cap = ICAP_AUTOMATICROTATE;goto exit;
-		}
-		if (std::wstring((const wchar_t *)s) == (const wchar_t *)"ICAP_JPEGQUALITY")
-		{
-			cap = ICAP_JPEGQUALITY;goto exit;
-		}
-		
-		json_free(s);
+		cap = CAP_XFERCOUNT;goto exit;
+	}
+	if (s.compare(L"ICAP_COMPRESSION") == 0)
+	{
+		cap = ICAP_COMPRESSION;goto exit;
+	}
+	if (s.compare(L"ICAP_PIXELTYPE") == 0)
+	{
+		cap = ICAP_PIXELTYPE;goto exit;
+	}
+	if (s.compare(L"ICAP_UNITS") == 0)
+	{
+		cap = ICAP_UNITS;goto exit;
+	}
+	if (s.compare(L"ICAP_XFERMECH") == 0)
+	{
+		cap = ICAP_XFERMECH;goto exit;
+	}
+	if (s.compare(L"CAP_AUTHOR") == 0)
+	{
+		cap = CAP_AUTHOR;goto exit;
+	}
+	if (s.compare(L"CAP_CAPTION") == 0)
+	{
+		cap = CAP_CAPTION;goto exit;
+	}
+	if (s.compare(L"CAP_FEEDERENABLED") == 0)
+	{
+		cap = CAP_FEEDERENABLED;goto exit;
+	}
+	if (s.compare(L"CAP_FEEDERLOADED") == 0)
+	{
+		cap = CAP_FEEDERLOADED;goto exit;
+	}
+	if (s.compare(L"CAP_TIMEDATE") == 0)
+	{
+		cap = CAP_TIMEDATE;goto exit;
+	}
+	if (s.compare(L"CAP_SUPPORTEDCAPS") == 0)
+	{
+		cap = CAP_SUPPORTEDCAPS;goto exit;
+	}
+	if (s.compare(L"CAP_EXTENDEDCAPS") == 0)
+	{
+		cap = CAP_EXTENDEDCAPS;goto exit;
+	}
+	if (s.compare(L"CAP_AUTOFEED") == 0)
+	{
+		cap = CAP_AUTOFEED;goto exit;
+	}
+	if (s.compare(L"CAP_CLEARPAGE") == 0)
+	{
+		cap = CAP_CLEARPAGE;goto exit;
+	}
+	if (s.compare(L"CAP_FEEDPAGE") == 0)
+	{
+		cap = CAP_FEEDPAGE;goto exit;
+	}
+	if (s.compare(L"CAP_REWINDPAGE") == 0)
+	{
+		cap = CAP_REWINDPAGE;goto exit;
+	}
+	if (s.compare(L"CAP_INDICATORS") == 0)
+	{
+		cap = CAP_INDICATORS;goto exit;
+	}
+	if (s.compare(L"CAP_SUPPORTEDCAPSEXT") == 0)
+	{
+		cap = CAP_SUPPORTEDCAPSEXT;goto exit;
+	}
+	if (s.compare(L"CAP_PAPERDETECTABLE") == 0)
+	{
+		cap = CAP_PAPERDETECTABLE;goto exit;
+	}
+	if (s.compare(L"CAP_UICONTROLLABLE") == 0)
+	{
+		cap = CAP_UICONTROLLABLE;goto exit;
+	}
+	if (s.compare(L"CAP_DEVICEONLINE") == 0)
+	{
+		cap = CAP_DEVICEONLINE;goto exit;
+	}
+	if (s.compare(L"CAP_AUTOSCAN") == 0)
+	{
+		cap = CAP_AUTOSCAN;goto exit;
+	}
+	if (s.compare(L"CAP_THUMBNAILSENABLED") == 0)
+	{
+		cap = CAP_THUMBNAILSENABLED;goto exit;
+	}
+	if (s.compare(L"CAP_DUPLEX") == 0)
+	{
+		cap = CAP_DUPLEX;goto exit;
+	}
+	if (s.compare(L"CAP_DUPLEXENABLED") == 0)
+	{
+		cap = CAP_DUPLEXENABLED;goto exit;
+	}
+	if (s.compare(L"CAP_ENABLEDSUIONLY") == 0)
+	{
+		cap = CAP_ENABLEDSUIONLY;goto exit;
+	}
+	if (s.compare(L"CAP_CUSTOMDSDATA") == 0)
+	{
+		cap = CAP_CUSTOMDSDATA;goto exit;
+	}
+	if (s.compare(L"CAP_ENDORSER") == 0)
+	{
+		cap = CAP_ENDORSER;goto exit;
+	}
+	if (s.compare(L"CAP_JOBCONTROL") == 0)
+	{
+		cap = CAP_JOBCONTROL;goto exit;
+	}
+	if (s.compare(L"CAP_ALARMS") == 0)
+	{
+		cap = CAP_ALARMS;goto exit;
+	}
+	if (s.compare(L"CAP_ALARMVOLUME") == 0)
+	{
+		cap = CAP_ALARMVOLUME;goto exit;
+	}
+	if (s.compare(L"CAP_AUTOMATICCAPTURE") == 0)
+	{
+		cap = CAP_AUTOMATICCAPTURE;goto exit;
+	}
+	if (s.compare(L"CAP_TIMEBEFOREFIRSTCAPTURE") == 0)
+	{
+		cap = CAP_TIMEBEFOREFIRSTCAPTURE;goto exit;
+	}
+	if (s.compare(L"CAP_TIMEBETWEENCAPTURES") == 0)
+	{
+		cap = CAP_TIMEBETWEENCAPTURES;goto exit;
+	}
+	if (s.compare(L"CAP_CLEARBUFFERS") == 0)
+	{
+		cap = CAP_CLEARBUFFERS;goto exit;
+	}
+	if (s.compare(L"CAP_MAXBATCHBUFFERS") == 0)
+	{
+		cap = CAP_MAXBATCHBUFFERS;goto exit;
+	}
+	if (s.compare(L"CAP_DEVICETIMEDATE") == 0)
+	{
+		cap = CAP_DEVICETIMEDATE;goto exit;
+	}
+	if (s.compare(L"CAP_POWERSUPPLY") == 0)
+	{
+		cap = CAP_POWERSUPPLY;goto exit;
+	}
+	if (s.compare(L"CAP_CAMERAPREVIEWUI") == 0)
+	{
+		cap = CAP_CAMERAPREVIEWUI;goto exit;
+	}
+	if (s.compare(L"CAP_DEVICEEVENT") == 0)
+	{
+		cap = CAP_DEVICEEVENT;goto exit;
+	}
+	if (s.compare(L"CAP_SERIALNUMBER") == 0)
+	{
+		cap = CAP_SERIALNUMBER;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTER") == 0)
+	{
+		cap = CAP_PRINTER;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERENABLED") == 0)
+	{
+		cap = CAP_PRINTERENABLED;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERINDEX") == 0)
+	{
+		cap = CAP_PRINTERINDEX;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERMODE") == 0)
+	{
+		cap = CAP_PRINTERMODE;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERSTRING") == 0)
+	{
+		cap = CAP_PRINTERSTRING;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERSUFFIX") == 0)
+	{
+		cap = CAP_PRINTERSUFFIX;goto exit;
+	}
+	if (s.compare(L"CAP_LANGUAGE") == 0)
+	{
+		cap = CAP_LANGUAGE;goto exit;
+	}
+	if (s.compare(L"CAP_FEEDERALIGNMENT") == 0)
+	{
+		cap = CAP_FEEDERALIGNMENT;goto exit;
+	}
+	if (s.compare(L"CAP_FEEDERORDER") == 0)
+	{
+		cap = CAP_FEEDERORDER;goto exit;
+	}
+	if (s.compare(L"CAP_REACQUIREALLOWED") == 0)
+	{
+		cap = CAP_REACQUIREALLOWED;goto exit;
+	}
+	if (s.compare(L"CAP_BATTERYMINUTES") == 0)
+	{
+		cap = CAP_BATTERYMINUTES;goto exit;
+	}
+	if (s.compare(L"CAP_BATTERYPERCENTAGE") == 0)
+	{
+		cap = CAP_BATTERYPERCENTAGE;goto exit;
+	}
+#if USE_TWAIN_DSM
+	if (s.compare(L"CAP_CAMERASIDE") == 0)
+	{
+		cap = CAP_CAMERASIDE;goto exit;
+	}
+	if (s.compare(L"CAP_SEGMENTED") == 0)
+	{
+		cap = CAP_SEGMENTED;goto exit;
+	}
+	if (s.compare(L"CAP_CAMERAENABLED") == 0)
+	{
+		cap = CAP_CAMERAENABLED;goto exit;
+	}
+	if (s.compare(L"CAP_CAMERAORDER") == 0)
+	{
+		cap = CAP_CAMERAORDER;goto exit;
+	}
+	if (s.compare(L"CAP_MICRENABLED") == 0)
+	{
+		cap = CAP_MICRENABLED;goto exit;
+	}
+	if (s.compare(L"CAP_FEEDERPREP") == 0)
+	{
+		cap = CAP_FEEDERPREP;goto exit;
+	}
+	if (s.compare(L"CAP_FEEDERPOCKET") == 0)
+	{
+		cap = CAP_FEEDERPOCKET;goto exit;
+	}
+	if (s.compare(L"CAP_AUTOMATICSENSEMEDIUM") == 0)
+	{
+		cap = CAP_AUTOMATICSENSEMEDIUM;goto exit;
+	}
+	if (s.compare(L"CAP_CUSTOMINTERFACEGUID") == 0)
+	{
+		cap = CAP_CUSTOMINTERFACEGUID;goto exit;
+	}
+	if (s.compare(L"CAP_SUPPORTEDCAPSSEGMENTUNIQUE") == 0)
+	{
+		cap = CAP_SUPPORTEDCAPSSEGMENTUNIQUE;goto exit;
+	}
+	if (s.compare(L"CAP_SUPPORTEDDATS") == 0)
+	{
+		cap = CAP_SUPPORTEDDATS;goto exit;
+	}
+	if (s.compare(L"CAP_DOUBLEFEEDDETECTION") == 0)
+	{
+		cap = CAP_DOUBLEFEEDDETECTION;goto exit;
+	}
+	if (s.compare(L"CAP_DOUBLEFEEDDETECTIONLENGTH") == 0)
+	{
+		cap = CAP_DOUBLEFEEDDETECTIONLENGTH;goto exit;
+	}
+	if (s.compare(L"CAP_DOUBLEFEEDDETECTIONSENSITIVITY") == 0)
+	{
+		cap = CAP_DOUBLEFEEDDETECTIONSENSITIVITY;goto exit;
+	}
+	if (s.compare(L"CAP_DOUBLEFEEDDETECTIONRESPONSE") == 0)
+	{
+		cap = CAP_DOUBLEFEEDDETECTIONRESPONSE;goto exit;
+	}
+	if (s.compare(L"CAP_PAPERHANDLING") == 0)
+	{
+		cap = CAP_PAPERHANDLING;goto exit;
+	}
+	if (s.compare(L"CAP_INDICATORSMODE") == 0)
+	{
+		cap = CAP_INDICATORSMODE;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERVERTICALOFFSET") == 0)
+	{
+		cap = CAP_PRINTERVERTICALOFFSET;goto exit;
+	}
+	if (s.compare(L"CAP_POWERSAVETIME") == 0)
+	{
+		cap = CAP_POWERSAVETIME;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERCHARROTATION") == 0)
+	{
+		cap = CAP_PRINTERCHARROTATION;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERFONTSTYLE") == 0)
+	{
+		cap = CAP_PRINTERFONTSTYLE;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERINDEXLEADCHAR") == 0)
+	{
+		cap = CAP_PRINTERINDEXLEADCHAR;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERINDEXMAXVALUE") == 0)
+	{
+		cap = CAP_PRINTERINDEXMAXVALUE;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERINDEXNUMDIGITS") == 0)
+	{
+		cap = CAP_PRINTERINDEXNUMDIGITS;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERINDEXSTEP") == 0)
+	{
+		cap = CAP_PRINTERINDEXSTEP;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERINDEXTRIGGER") == 0)
+	{
+		cap = CAP_PRINTERINDEXTRIGGER;goto exit;
+	}
+	if (s.compare(L"CAP_PRINTERSTRINGPREVIEW") == 0)
+	{
+		cap = CAP_PRINTERSTRINGPREVIEW;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTODISCARDBLANKPAGES") == 0)
+	{
+		cap = ICAP_AUTODISCARDBLANKPAGES;goto exit;
+	}
+	if (s.compare(L"ICAP_FEEDERTYPE") == 0)
+	{
+		cap = ICAP_FEEDERTYPE;goto exit;
+	}
+	if (s.compare(L"ICAP_ICCPROFILE") == 0)
+	{
+		cap = ICAP_ICCPROFILE;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTOSIZE") == 0)
+	{
+		cap = ICAP_AUTOSIZE;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTOMATICCROPUSESFRAME") == 0)
+	{
+		cap = ICAP_AUTOMATICCROPUSESFRAME;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTOMATICLENGTHDETECTION") == 0)
+	{
+		cap = ICAP_AUTOMATICLENGTHDETECTION;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTOMATICCOLORENABLED") == 0)
+	{
+		cap = ICAP_AUTOMATICCOLORENABLED;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTOMATICCOLORNONCOLORPIXELTYPE") == 0)
+	{
+		cap = ICAP_AUTOMATICCOLORNONCOLORPIXELTYPE;goto exit;
+	}
+	if (s.compare(L"ICAP_COLORMANAGEMENTENABLED") == 0)
+	{
+		cap = ICAP_COLORMANAGEMENTENABLED;goto exit;
+	}
+	if (s.compare(L"ICAP_IMAGEMERGE") == 0)
+	{
+		cap = ICAP_IMAGEMERGE;goto exit;
+	}
+	if (s.compare(L"ICAP_IMAGEMERGEHEIGHTTHRESHOLD") == 0)
+	{
+		cap = ICAP_IMAGEMERGEHEIGHTTHRESHOLD;goto exit;
+	}
+	if (s.compare(L"ICAP_SUPPORTEDEXTIMAGEINFO") == 0)
+	{
+		cap = ICAP_SUPPORTEDEXTIMAGEINFO;goto exit;
+	}
+	if (s.compare(L"ICAP_FILMTYPE") == 0)
+	{
+		cap = ICAP_FILMTYPE;goto exit;
+	}
+	if (s.compare(L"ICAP_MIRROR") == 0)
+	{
+		cap = ICAP_MIRROR;goto exit;
+	}
+	if (s.compare(L"ICAP_JPEGSUBSAMPLING") == 0)
+	{
+		cap = ICAP_JPEGSUBSAMPLING;goto exit;
+	}
+#endif
+	if (s.compare(L"ICAP_AUTOBRIGHT") == 0)
+	{
+		cap = ICAP_AUTOBRIGHT;goto exit;
+	}
+	if (s.compare(L"ICAP_BRIGHTNESS") == 0)
+	{
+		cap = ICAP_BRIGHTNESS;goto exit;
+	}
+	if (s.compare(L"ICAP_CONTRAST") == 0)
+	{
+		cap = ICAP_CONTRAST;goto exit;
+	}
+	if (s.compare(L"ICAP_CUSTHALFTONE") == 0)
+	{
+		cap = ICAP_CUSTHALFTONE;goto exit;
+	}
+	if (s.compare(L"ICAP_EXPOSURETIME") == 0)
+	{
+		cap = ICAP_EXPOSURETIME;goto exit;
+	}
+	if (s.compare(L"ICAP_FILTER") == 0)
+	{
+		cap = ICAP_FILTER;goto exit;
+	}
+	if (s.compare(L"ICAP_FLASHUSED") == 0)
+	{
+		cap = ICAP_FLASHUSED;goto exit;
+	}
+	if (s.compare(L"ICAP_GAMMA") == 0)
+	{
+		cap = ICAP_GAMMA;goto exit;
+	}
+	if (s.compare(L"ICAP_HALFTONES") == 0)
+	{
+		cap = ICAP_HALFTONES;goto exit;
+	}
+	if (s.compare(L"ICAP_HIGHLIGHT") == 0)
+	{
+		cap = ICAP_HIGHLIGHT;goto exit;
+	}
+	if (s.compare(L"ICAP_IMAGEFILEFORMAT") == 0)
+	{
+		cap = ICAP_IMAGEFILEFORMAT;goto exit;
+	}
+	if (s.compare(L"ICAP_LAMPSTATE") == 0)
+	{
+		cap = ICAP_LAMPSTATE;goto exit;
+	}
+	if (s.compare(L"ICAP_LIGHTSOURCE") == 0)
+	{
+		cap = ICAP_LIGHTSOURCE;goto exit;
+	}
+	if (s.compare(L"ICAP_ORIENTATION") == 0)
+	{
+		cap = ICAP_ORIENTATION;goto exit;
+	}
+	if (s.compare(L"ICAP_PHYSICALWIDTH") == 0)
+	{
+		cap = ICAP_PHYSICALWIDTH;goto exit;
+	}
+	if (s.compare(L"ICAP_PHYSICALHEIGHT") == 0)
+	{
+		cap = ICAP_PHYSICALHEIGHT;goto exit;
+	}
+	if (s.compare(L"ICAP_SHADOW") == 0)
+	{
+		cap = ICAP_SHADOW;goto exit;
+	}
+	if (s.compare(L"ICAP_FRAMES") == 0)
+	{
+		cap = ICAP_FRAMES;goto exit;
+	}
+	if (s.compare(L"ICAP_XNATIVERESOLUTION") == 0)
+	{
+		cap = ICAP_XNATIVERESOLUTION;goto exit;
+	}
+	if (s.compare(L"ICAP_YNATIVERESOLUTION") == 0)
+	{
+		cap = ICAP_YNATIVERESOLUTION;goto exit;
+	}
+	if (s.compare(L"ICAP_XRESOLUTION") == 0)
+	{
+		cap = ICAP_XRESOLUTION;goto exit;
+	}
+	if (s.compare(L"ICAP_YRESOLUTION") == 0)
+	{
+		cap = ICAP_YRESOLUTION;goto exit;
+	}
+	if (s.compare(L"ICAP_MAXFRAMES") == 0)
+	{
+		cap = ICAP_MAXFRAMES;goto exit;
+	}
+	if (s.compare(L"ICAP_TILES") == 0)
+	{
+		cap = ICAP_TILES;goto exit;
+	}
+	if (s.compare(L"ICAP_BITORDER") == 0)
+	{
+		cap = ICAP_BITORDER;goto exit;
+	}
+	if (s.compare(L"ICAP_CCITTKFACTOR") == 0)
+	{
+		cap = ICAP_CCITTKFACTOR;goto exit;
+	}
+	if (s.compare(L"ICAP_LIGHTPATH") == 0)
+	{
+		cap = ICAP_LIGHTPATH;goto exit;
+	}
+	if (s.compare(L"ICAP_PIXELFLAVOR") == 0)
+	{
+		cap = ICAP_PIXELFLAVOR;goto exit;
+	}
+	if (s.compare(L"ICAP_PLANARCHUNKY") == 0)
+	{
+		cap = ICAP_PLANARCHUNKY;goto exit;
+	}
+	if (s.compare(L"ICAP_ROTATION") == 0)
+	{
+		cap = ICAP_ROTATION;goto exit;
+	}
+	if (s.compare(L"ICAP_SUPPORTEDSIZES") == 0)
+	{
+		cap = ICAP_SUPPORTEDSIZES;goto exit;
+	}
+	if (s.compare(L"ICAP_THRESHOLD") == 0)
+	{
+		cap = ICAP_THRESHOLD;goto exit;
+	}
+	if (s.compare(L"ICAP_XSCALING") == 0)
+	{
+		cap = ICAP_XSCALING;goto exit;
+	}
+	if (s.compare(L"ICAP_YSCALING") == 0)
+	{
+		cap = ICAP_YSCALING;goto exit;
+	}
+	if (s.compare(L"ICAP_BITORDERCODES") == 0)
+	{
+		cap = ICAP_BITORDERCODES;goto exit;
+	}
+	if (s.compare(L"ICAP_PIXELFLAVORCODES") == 0)
+	{
+		cap = ICAP_PIXELFLAVORCODES;goto exit;
+	}
+	if (s.compare(L"ICAP_JPEGPIXELTYPE") == 0)
+	{
+		cap = ICAP_JPEGPIXELTYPE;goto exit;
+	}
+	if (s.compare(L"ICAP_TIMEFILL") == 0)
+	{
+		cap = ICAP_TIMEFILL;goto exit;
+	}
+	if (s.compare(L"ICAP_BITDEPTH") == 0)
+	{
+		cap = ICAP_BITDEPTH;goto exit;
+	}
+	if (s.compare(L"ICAP_BITDEPTHREDUCTION") == 0)
+	{
+		cap = ICAP_BITDEPTHREDUCTION;goto exit;
+	}
+	if (s.compare(L"ICAP_UNDEFINEDIMAGESIZE") == 0)
+	{
+		cap = ICAP_UNDEFINEDIMAGESIZE;goto exit;
+	}
+	if (s.compare(L"ICAP_IMAGEDATASET") == 0)
+	{
+		cap = ICAP_IMAGEDATASET;goto exit;
+	}
+	if (s.compare(L"ICAP_EXTIMAGEINFO") == 0)
+	{
+		cap = ICAP_EXTIMAGEINFO;goto exit;
+	}
+	if (s.compare(L"ICAP_MINIMUMHEIGHT") == 0)
+	{
+		cap = ICAP_MINIMUMHEIGHT;goto exit;
+	}
+	if (s.compare(L"ICAP_MINIMUMWIDTH") == 0)
+	{
+		cap = ICAP_MINIMUMWIDTH;goto exit;
+	}
+	if (s.compare(L"ICAP_FLIPROTATION") == 0)
+	{
+		cap = ICAP_FLIPROTATION;goto exit;
+	}
+	if (s.compare(L"ICAP_BARCODEDETECTIONENABLED") == 0)
+	{
+		cap = ICAP_BARCODEDETECTIONENABLED;goto exit;
+	}
+	if (s.compare(L"ICAP_SUPPORTEDBARCODETYPES") == 0)
+	{
+		cap = ICAP_SUPPORTEDBARCODETYPES;goto exit;
+	}
+	if (s.compare(L"ICAP_BARCODEMAXSEARCHPRIORITIES") == 0)
+	{
+		cap = ICAP_BARCODEMAXSEARCHPRIORITIES;goto exit;
+	}
+	if (s.compare(L"ICAP_BARCODESEARCHPRIORITIES") == 0)
+	{
+		cap = ICAP_BARCODESEARCHPRIORITIES;goto exit;
+	}
+	if (s.compare(L"ICAP_BARCODESEARCHMODE") == 0)
+	{
+		cap = ICAP_BARCODESEARCHMODE;goto exit;
+	}
+	if (s.compare(L"ICAP_BARCODEMAXRETRIES") == 0)
+	{
+		cap = ICAP_BARCODEMAXRETRIES;goto exit;
+	}
+	if (s.compare(L"ICAP_BARCODETIMEOUT") == 0)
+	{
+		cap = ICAP_BARCODETIMEOUT;goto exit;
+	}
+	if (s.compare(L"ICAP_ZOOMFACTOR") == 0)
+	{
+		cap = ICAP_ZOOMFACTOR;goto exit;
+	}
+	if (s.compare(L"ICAP_PATCHCODEDETECTIONENABLED") == 0)
+	{
+		cap = ICAP_PATCHCODEDETECTIONENABLED;goto exit;
+	}
+	if (s.compare(L"ICAP_SUPPORTEDPATCHCODETYPES") == 0)
+	{
+		cap = ICAP_SUPPORTEDPATCHCODETYPES;goto exit;
+	}
+	if (s.compare(L"ICAP_PATCHCODEMAXSEARCHPRIORITIES") == 0)
+	{
+		cap = ICAP_PATCHCODEMAXSEARCHPRIORITIES;goto exit;
+	}
+	if (s.compare(L"ICAP_PATCHCODESEARCHPRIORITIES") == 0)
+	{
+		cap = ICAP_PATCHCODESEARCHPRIORITIES;goto exit;
+	}
+	if (s.compare(L"ICAP_PATCHCODESEARCHMODE") == 0)
+	{
+		cap = ICAP_PATCHCODESEARCHMODE;goto exit;
+	}
+	if (s.compare(L"ICAP_PATCHCODEMAXRETRIES") == 0)
+	{
+		cap = ICAP_PATCHCODEMAXRETRIES;goto exit;
+	}
+	if (s.compare(L"ICAP_PATCHCODETIMEOUT") == 0)
+	{
+		cap = ICAP_PATCHCODETIMEOUT;goto exit;
+	}
+	if (s.compare(L"ICAP_FLASHUSED2") == 0)
+	{
+		cap = ICAP_FLASHUSED2;goto exit;
+	}
+	if (s.compare(L"ICAP_IMAGEFILTER") == 0)
+	{
+		cap = ICAP_IMAGEFILTER;goto exit;
+	}
+	if (s.compare(L"ICAP_NOISEFILTER") == 0)
+	{
+		cap = ICAP_NOISEFILTER;goto exit;
+	}
+	if (s.compare(L"ICAP_OVERSCAN") == 0)
+	{
+		cap = ICAP_OVERSCAN;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTOMATICBORDERDETECTION") == 0)
+	{
+		cap = ICAP_AUTOMATICBORDERDETECTION;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTOMATICDESKEW") == 0)
+	{
+		cap = ICAP_AUTOMATICDESKEW;goto exit;
+	}
+	if (s.compare(L"ICAP_AUTOMATICROTATE") == 0)
+	{
+		cap = ICAP_AUTOMATICROTATE;goto exit;
+	}
+	if (s.compare(L"ICAP_JPEGQUALITY") == 0)
+	{
+		cap = ICAP_JPEGQUALITY;goto exit;
 	}
 	
 exit:
@@ -3281,1400 +3599,1350 @@ exit:
 
 int json_get_cap_constant(JSONNODE *n, TW_UINT16 cap)
 {
-	int v = 0;
-	
-	json_char *s = json_as_string(n);
-	if(s)
+	int v = json_as_int(n);
+
+	json_char *name = json_as_string(n);
+
+	if (name)
 	{
-		switch(cap)
+		std::wstring s = std::wstring((const wchar_t *)name);
+		switch (cap)
 		{
-				//convert to constant
+			//convert to constant
 #if USE_TWAIN_DSM
-			case ICAP_AUTOSIZE:
+		case ICAP_AUTOSIZE:
+		{
+			if (s.compare(L"TWAS_NONE") == 0)
 			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAS_NONE")
-				{
-					v = TWAS_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAS_AUTO")
-				{
-					v = TWAS_AUTO;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAS_CURRENT")
-				{
-					v = TWAS_CURRENT;
-				}
-				
+				v = TWAS_NONE;goto exit2;
 			}
-				break;
-			case ICAP_AUTODISCARDBLANKPAGES:
+			if (s.compare(L"TWAS_AUTO") == 0)
 			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBP_DISABLE")
-				{
-					v = TWBP_DISABLE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBP_AUTO")
-				{
-					v = TWBP_AUTO;
-				}
-				
+				v = TWAS_AUTO;goto exit2;
 			}
-				break;
-			case CAP_CAMERASIDE:
+			if (s.compare(L"TWAS_CURRENT") == 0)
 			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCS_BOTH")
-				{
-					v = TWCS_BOTH;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCS_TOP")
-				{
-					v = TWCS_TOP;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCS_BOTTOM")
-				{
-					v = TWCS_BOTTOM;
-				}
-				
+				v = TWAS_CURRENT;goto exit2;
 			}
-				break;
-			case ICAP_FEEDERTYPE:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFE_GENERAL")
-				{
-					v = TWFE_GENERAL;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFE_PHOTO")
-				{
-					v = TWFE_PHOTO;
-				}
-				
-			}
-				break;
-			case CAP_FEEDERPOCKET:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKETERROR")
-				{
-					v = TWFP_POCKETERROR;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET1")
-				{
-					v = TWFP_POCKET1;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET2")
-				{
-					v = TWFP_POCKET2;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET3")
-				{
-					v = TWFP_POCKET3;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET4")
-				{
-					v = TWFP_POCKET4;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET5")
-				{
-					v = TWFP_POCKET5;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET6")
-				{
-					v = TWFP_POCKET6;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET7")
-				{
-					v = TWFP_POCKET7;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET8")
-				{
-					v = TWFP_POCKET8;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET9")
-				{
-					v = TWFP_POCKET9;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET10")
-				{
-					v = TWFP_POCKET10;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET11")
-				{
-					v = TWFP_POCKET11;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET12")
-				{
-					v = TWFP_POCKET12;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET13")
-				{
-					v = TWFP_POCKET13;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET14")
-				{
-					v = TWFP_POCKET14;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET15")
-				{
-					v = TWFP_POCKET15;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFP_POCKET16")
-				{
-					v = TWFP_POCKET16;
-				}
-				
-			}
-				break;
-			case ICAP_ICCPROFILE:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIC_NONE")
-				{
-					v = TWIC_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIC_LINK")
-				{
-					v = TWIC_LINK;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIC_EMBED")
-				{
-					v = TWIC_EMBED;
-				}
-				
-			}
-				break;
-			case ICAP_IMAGEMERGE:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIM_NONE")
-				{
-					v = TWIM_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIM_FRONTONTOP")
-				{
-					v = TWIM_FRONTONTOP;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIM_FRONTONBOTTOM")
-				{
-					v = TWIM_FRONTONBOTTOM;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIM_FRONTONLEFT")
-				{
-					v = TWIM_FRONTONLEFT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIM_FRONTONRIGHT")
-				{
-					v = TWIM_FRONTONRIGHT;
-				}
-				
-			}
-				break;
-			case CAP_SEGMENTED:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSG_NONE")
-				{
-					v = TWSG_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSG_AUTO")
-				{
-					v = TWSG_AUTO;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSG_MANUAL")
-				{
-					v = TWSG_MANUAL;
-				}
-				
-			}
-				break;
-#endif
-			case CAP_ALARMS:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_ALARM")
-				{
-					v = TWAL_ALARM;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_FEEDERERROR")
-				{
-					v = TWAL_FEEDERERROR;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_FEEDERWARNING")
-				{
-					v = TWAL_FEEDERWARNING;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_BARCODE")
-				{
-					v = TWAL_BARCODE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_DOUBLEFEED")
-				{
-					v = TWAL_DOUBLEFEED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_JAM")
-				{
-					v = TWAL_JAM;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_PATCHCODE")
-				{
-					v = TWAL_PATCHCODE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_POWER")
-				{
-					v = TWAL_POWER;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWAL_SKEW")
-				{
-					v = TWAL_SKEW;
-				}
-				
-			}
-				break;
-			case ICAP_COMPRESSION:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_NONE")
-				{
-					v = TWCP_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_PACKBITS")
-				{
-					v = TWCP_PACKBITS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_GROUP31D")
-				{
-					v = TWCP_GROUP31D;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_GROUP31DEOL")
-				{
-					v = TWCP_GROUP31DEOL;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_GROUP32D")
-				{
-					v = TWCP_GROUP32D;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_GROUP4")
-				{
-					v = TWCP_GROUP4;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_JPEG")
-				{
-					v = TWCP_JPEG;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_LZW")
-				{
-					v = TWCP_LZW;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_JBIG")
-				{
-					v = TWCP_JBIG;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_PNG")
-				{
-					v = TWCP_PNG;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_RLE4")
-				{
-					v = TWCP_RLE4;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_RLE8")
-				{
-					v = TWCP_RLE8;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_BITFIELDS")
-				{
-					v = TWCP_BITFIELDS;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_ZIP")
-				//			{
-				//				v = TWCP_ZIP;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCP_JPEG2000")
-				//			{
-				//				v = TWCP_JPEG2000;
-				//			}
-				
-			}
-				break;
-			case ICAP_BARCODESEARCHMODE:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBD_HORZ")
-				{
-					v = TWBD_HORZ;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBD_VERT")
-				{
-					v = TWBD_VERT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBD_HORZVERT")
-				{
-					v = TWBD_HORZVERT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBD_VERTHORZ")
-				{
-					v = TWBD_VERTHORZ;
-				}
-				
-			}
-				break;
-			case ICAP_BITORDER:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBO_LSBFIRST")
-				{
-					v = TWBO_LSBFIRST;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBO_MSBFIRST")
-				{
-					v = TWBO_MSBFIRST;
-				}
-				
-			}
-				break;
-			case ICAP_BITDEPTHREDUCTION:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBR_THRESHOLD")
-				{
-					v = TWBR_THRESHOLD;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBR_HALFTONE")
-				{
-					v = TWBR_HALFTONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBR_CUSTHALFTONE")
-				{
-					v = TWBR_CUSTHALFTONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBR_DIFFUSION")
-				{
-					v = TWBR_DIFFUSION;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBR_DYNAMICTHRESHOLD")
-				//			{
-				//				v = TWBR_DYNAMICTHRESHOLD;
-				//			}
-				
-			}
-				break;
-			case ICAP_SUPPORTEDBARCODETYPES:
-			case TWEI_BARCODETYPE:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_3OF9")
-				{
-					v = TWBT_3OF9;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_2OF5INTERLEAVED")
-				{
-					v = TWBT_2OF5INTERLEAVED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_2OF5NONINTERLEAVED")
-				{
-					v = TWBT_2OF5NONINTERLEAVED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_CODE93")
-				{
-					v = TWBT_CODE93;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_CODE128")
-				{
-					v = TWBT_CODE128;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_UCC128")
-				{
-					v = TWBT_UCC128;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_CODABAR")
-				{
-					v = TWBT_CODABAR;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_UPCA")
-				{
-					v = TWBT_UPCA;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_UPCE")
-				{
-					v = TWBT_UPCE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_EAN8")
-				{
-					v = TWBT_EAN8;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_EAN13")
-				{
-					v = TWBT_EAN13;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_POSTNET")
-				{
-					v = TWBT_POSTNET;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_PDF417")
-				{
-					v = TWBT_PDF417;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_2OF5INDUSTRIAL")
-				{
-					v = TWBT_2OF5INDUSTRIAL;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_2OF5MATRIX")
-				{
-					v = TWBT_2OF5MATRIX;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_2OF5DATALOGIC")
-				{
-					v = TWBT_2OF5DATALOGIC;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_2OF5IATA")
-				{
-					v = TWBT_2OF5IATA;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_3OF9FULLASCII")
-				{
-					v = TWBT_3OF9FULLASCII;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_CODABARWITHSTARTSTOP")
-				{
-					v = TWBT_CODABARWITHSTARTSTOP;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_MAXICODE")
-				{
-					v = TWBT_MAXICODE;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWBT_QRCODE")
-				//			{
-				//				v = TWBT_QRCODE;
-				//			}
-				
-			}
-				break;
-			case CAP_CLEARBUFFERS:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCB_AUTO")
-				{
-					v = TWCB_AUTO;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCB_CLEAR")
-				{
-					v = TWCB_CLEAR;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWCB_NOCLEAR")
-				{
-					v = TWCB_NOCLEAR;
-				}
-				
-			}
-				break;
-			case CAP_DEVICEEVENT:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_CUSTOMEVENTS")
-				{
-					v = TWDE_CUSTOMEVENTS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_CHECKAUTOMATICCAPTURE")
-				{
-					v = TWDE_CHECKAUTOMATICCAPTURE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_CHECKBATTERY")
-				{
-					v = TWDE_CHECKBATTERY;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_CHECKDEVICEONLINE")
-				{
-					v = TWDE_CHECKDEVICEONLINE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_CHECKFLASH")
-				{
-					v = TWDE_CHECKFLASH;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_CHECKPOWERSUPPLY")
-				{
-					v = TWDE_CHECKPOWERSUPPLY;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_CHECKRESOLUTION")
-				{
-					v = TWDE_CHECKRESOLUTION;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_DEVICEADDED")
-				{
-					v = TWDE_DEVICEADDED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_DEVICEOFFLINE")
-				{
-					v = TWDE_DEVICEOFFLINE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_DEVICEREADY")
-				{
-					v = TWDE_DEVICEREADY;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_DEVICEREMOVED")
-				{
-					v = TWDE_DEVICEREMOVED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_IMAGECAPTURED")
-				{
-					v = TWDE_IMAGECAPTURED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_IMAGEDELETED")
-				{
-					v = TWDE_IMAGEDELETED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_PAPERDOUBLEFEED")
-				{
-					v = TWDE_PAPERDOUBLEFEED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_PAPERJAM")
-				{
-					v = TWDE_PAPERJAM;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_LAMPFAILURE")
-				{
-					v = TWDE_LAMPFAILURE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_POWERSAVE")
-				{
-					v = TWDE_POWERSAVE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDE_POWERSAVENOTIFY")
-				{
-					v = TWDE_POWERSAVENOTIFY;
-				}
-				
-			}
-				break;
-			case CAP_DUPLEX:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDX_NONE")
-				{
-					v = TWDX_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDX_1PASSDUPLEX")
-				{
-					v = TWDX_1PASSDUPLEX;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWDX_2PASSDUPLEX")
-				{
-					v = TWDX_2PASSDUPLEX;
-				}
-				
-			}
-				break;
-			case CAP_FEEDERALIGNMENT:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFA_NONE")
-				{
-					v = TWFA_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFA_LEFT")
-				{
-					v = TWFA_LEFT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFA_CENTER")
-				{
-					v = TWFA_CENTER;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFA_RIGHT")
-				{
-					v = TWFA_RIGHT;
-				}
-				
-			}
-				break;
-			case ICAP_IMAGEFILEFORMAT:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_TIFF")
-				{
-					v = TWFF_TIFF;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_PICT")
-				{
-					v = TWFF_PICT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_BMP")
-				{
-					v = TWFF_BMP;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_XBM")
-				{
-					v = TWFF_XBM;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_JFIF")
-				{
-					v = TWFF_JFIF;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_FPX")
-				{
-					v = TWFF_FPX;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_TIFFMULTI")
-				{
-					v = TWFF_TIFFMULTI;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_PNG")
-				{
-					v = TWFF_PNG;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_SPIFF")
-				{
-					v = TWFF_SPIFF;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_EXIF")
-				{
-					v = TWFF_EXIF;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_PDF")
-				//			{
-				//				v = TWFF_PDF;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_JP2")
-				//			{
-				//				v = TWFF_JP2;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_JPX")
-				//			{
-				//				v = TWFF_JPX;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_DEJAVU")
-				//			{
-				//				v = TWFF_DEJAVU;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_PDFA")
-				//			{
-				//				v = TWFF_PDFA;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFF_PDFA2")
-				//			{
-				//				v = TWFF_PDFA2;
-				//			}
-				
-			}
-				break;
-			case ICAP_FLASHUSED2:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFL_NONE")
-				{
-					v = TWFL_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFL_OFF")
-				{
-					v = TWFL_OFF;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFL_ON")
-				{
-					v = TWFL_ON;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFL_AUTO")
-				{
-					v = TWFL_AUTO;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFL_REDEYE")
-				{
-					v = TWFL_REDEYE;
-				}
-				
-			}
-				break;
-			case CAP_FEEDERORDER:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFO_FIRSTPAGEFIRST")
-				{
-					v = TWFO_FIRSTPAGEFIRST;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFO_LASTPAGEFIRST")
-				{
-					v = TWFO_LASTPAGEFIRST;
-				}
-				
-			}
-				break;
-			case ICAP_FLIPROTATION:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFR_BOOK")
-				{
-					v = TWFR_BOOK;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFR_FANFOLD")
-				{
-					v = TWFR_FANFOLD;
-				}
-				
-			}
-				break;
-			case ICAP_FILTER:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_RED")
-				{
-					v = TWFT_RED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_GREEN")
-				{
-					v = TWFT_GREEN;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_BLUE")
-				{
-					v = TWFT_BLUE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_NONE")
-				{
-					v = TWFT_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_WHITE")
-				{
-					v = TWFT_WHITE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_CYAN")
-				{
-					v = TWFT_CYAN;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_MAGENTA")
-				{
-					v = TWFT_MAGENTA;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_YELLOW")
-				{
-					v = TWFT_YELLOW;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWFT_BLACK")
-				{
-					v = TWFT_BLACK;
-				}
-				
-			}
-				break;
-			case ICAP_IMAGEFILTER:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIF_NONE")
-				{
-					v = TWIF_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIF_AUTO")
-				{
-					v = TWIF_AUTO;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIF_LOWPASS")
-				{
-					v = TWIF_LOWPASS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIF_BANDPASS")
-				{
-					v = TWIF_BANDPASS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIF_HIGHPASS")
-				{
-					v = TWIF_HIGHPASS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIF_TEXT")
-				{
-					v = TWIF_TEXT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWIF_FINELINE")
-				{
-					v = TWIF_FINELINE;
-				}
-				
-			}
-				break;
-			case CAP_JOBCONTROL:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJC_NONE")
-				{
-					v = TWJC_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJC_JSIC")
-				{
-					v = TWJC_JSIC;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJC_JSIS")
-				{
-					v = TWJC_JSIS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJC_JSXC")
-				{
-					v = TWJC_JSXC;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJC_JSXS")
-				{
-					v = TWJC_JSXS;
-				}
-				
-			}
-				break;
-			case ICAP_JPEGQUALITY:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJQ_UNKNOWN")
-				{
-					v = TWJQ_UNKNOWN;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJQ_LOW")
-				{
-					v = TWJQ_LOW;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJQ_MEDIUM")
-				{
-					v = TWJQ_MEDIUM;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWJQ_HIGH")
-				{
-					v = TWJQ_HIGH;
-				}
-				
-			}
-				break;
-			case ICAP_LIGHTPATH:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLP_REFLECTIVE")
-				{
-					v = TWLP_REFLECTIVE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLP_TRANSMISSIVE")
-				{
-					v = TWLP_TRANSMISSIVE;
-				}
-				
-			}
-				break;
-			case ICAP_LIGHTSOURCE:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLS_RED")
-				{
-					v = TWLS_RED;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLS_GREEN")
-				{
-					v = TWLS_GREEN;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLS_BLUE")
-				{
-					v = TWLS_BLUE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLS_NONE")
-				{
-					v = TWLS_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLS_WHITE")
-				{
-					v = TWLS_WHITE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLS_UV")
-				{
-					v = TWLS_UV;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWLS_IR")
-				{
-					v = TWLS_IR;
-				}
-				
-			}
-				break;
-			case ICAP_NOISEFILTER:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWNF_NONE")
-				{
-					v = TWNF_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWNF_AUTO")
-				{
-					v = TWNF_AUTO;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWNF_LONEPIXEL")
-				{
-					v = TWNF_LONEPIXEL;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWNF_MAJORITYRULE")
-				{
-					v = TWNF_MAJORITYRULE;
-				}
-				
-			}
-				break;
-			case ICAP_ORIENTATION:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_ROT0")
-				{
-					v = TWOR_ROT0;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_ROT90")
-				{
-					v = TWOR_ROT90;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_ROT180")
-				{
-					v = TWOR_ROT180;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_ROT270")
-				{
-					v = TWOR_ROT270;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_PORTRAIT")
-				{
-					v = TWOR_PORTRAIT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_LANDSCAPE")
-				{
-					v = TWOR_LANDSCAPE;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_AUTO")
-				//			{
-				//				v = TWOR_AUTO;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_AUTOTEXT")
-				//			{
-				//				v = TWOR_AUTOTEXT;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOR_AUTOPICTURE")
-				//			{
-				//				v = TWOR_AUTOPICTURE;
-				//			}
-				
-			}
-				break;
-			case ICAP_OVERSCAN:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOV_NONE")
-				{
-					v = TWOV_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOV_AUTO")
-				{
-					v = TWOV_AUTO;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOV_TOPBOTTOM")
-				{
-					v = TWOV_TOPBOTTOM;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOV_LEFTRIGHT")
-				{
-					v = TWOV_LEFTRIGHT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWOV_ALL")
-				{
-					v = TWOV_ALL;
-				}
-				
-			}
-				break;
-			case ICAP_PLANARCHUNKY:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPC_CHUNKY")
-				{
-					v = TWPC_CHUNKY;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPC_PLANAR")
-				{
-					v = TWPC_PLANAR;
-				}
-				
-			}
-				break;
-			case ICAP_PIXELFLAVOR:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPF_CHOCOLATE")
-				{
-					v = TWPF_CHOCOLATE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPF_VANILLA")
-				{
-					v = TWPF_VANILLA;
-				}
-				
-			}
-				break;
-			case CAP_PRINTERMODE:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPM_SINGLESTRING")
-				{
-					v = TWPM_SINGLESTRING;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPM_MULTISTRING")
-				{
-					v = TWPM_MULTISTRING;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPM_COMPOUNDSTRING")
-				{
-					v = TWPM_COMPOUNDSTRING;
-				}
-				
-			}
-				break;
-			case CAP_PRINTER:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPR_IMPRINTERTOPBEFORE")
-				{
-					v = TWPR_IMPRINTERTOPBEFORE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPR_IMPRINTERTOPAFTER")
-				{
-					v = TWPR_IMPRINTERTOPAFTER;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPR_IMPRINTERBOTTOMBEFORE")
-				{
-					v = TWPR_IMPRINTERBOTTOMBEFORE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPR_IMPRINTERBOTTOMAFTER")
-				{
-					v = TWPR_IMPRINTERBOTTOMAFTER;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPR_ENDORSERTOPBEFORE")
-				{
-					v = TWPR_ENDORSERTOPBEFORE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPR_ENDORSERTOPAFTER")
-				{
-					v = TWPR_ENDORSERTOPAFTER;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPR_ENDORSERBOTTOMBEFORE")
-				{
-					v = TWPR_ENDORSERBOTTOMBEFORE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPR_ENDORSERBOTTOMAFTER")
-				{
-					v = TWPR_ENDORSERBOTTOMAFTER;
-				}
-				
-			}
-				break;
-			case CAP_POWERSUPPLY:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPS_EXTERNAL")
-				{
-					v = TWPS_EXTERNAL;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPS_BATTERY")
-				{
-					v = TWPS_BATTERY;
-				}
-				
-			}
-				break;
-			case ICAP_PIXELTYPE:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_BW")
-				{
-					v = TWPT_BW;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_GRAY")
-				{
-					v = TWPT_GRAY;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_RGB")
-				{
-					v = TWPT_RGB;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_PALETTE")
-				{
-					v = TWPT_PALETTE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_CMY")
-				{
-					v = TWPT_CMY;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_CMYK")
-				{
-					v = TWPT_CMYK;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_YUV")
-				{
-					v = TWPT_YUV;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_YUVK")
-				{
-					v = TWPT_YUVK;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_CIEXYZ")
-				{
-					v = TWPT_CIEXYZ;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_LAB")
-				//			{
-				//				v = TWPT_LAB;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_SRGB")
-				//			{
-				//				v = TWPT_SRGB;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_SCRGB")
-				//			{
-				//				v = TWPT_SCRGB;
-				//			}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWPT_INFRARED")
-				//			{
-				//				v = TWPT_INFRARED;
-				//			}
-				
-			}
-				break;
-			case ICAP_SUPPORTEDSIZES:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_NONE")
-				{
-					v = TWSS_NONE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A4")
-				{
-					v = TWSS_A4;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB5")
-				{
-					v = TWSS_JISB5;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_USLETTER")
-				{
-					v = TWSS_USLETTER;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_USLEGAL")
-				{
-					v = TWSS_USLEGAL;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A5")
-				{
-					v = TWSS_A5;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB4")
-				{
-					v = TWSS_ISOB4;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB6")
-				{
-					v = TWSS_ISOB6;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_USLEDGER")
-				{
-					v = TWSS_USLEDGER;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_USEXECUTIVE")
-				{
-					v = TWSS_USEXECUTIVE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A3")
-				{
-					v = TWSS_A3;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB3")
-				{
-					v = TWSS_ISOB3;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A6")
-				{
-					v = TWSS_A6;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C4")
-				{
-					v = TWSS_C4;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C5")
-				{
-					v = TWSS_C5;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C6")
-				{
-					v = TWSS_C6;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_4A0")
-				{
-					v = TWSS_4A0;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_2A0")
-				{
-					v = TWSS_2A0;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A0")
-				{
-					v = TWSS_A0;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A1")
-				{
-					v = TWSS_A1;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A2")
-				{
-					v = TWSS_A2;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A7")
-				{
-					v = TWSS_A7;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A8")
-				{
-					v = TWSS_A8;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A9")
-				{
-					v = TWSS_A9;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_A10")
-				{
-					v = TWSS_A10;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB0")
-				{
-					v = TWSS_ISOB0;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB1")
-				{
-					v = TWSS_ISOB1;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB2")
-				{
-					v = TWSS_ISOB2;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB5")
-				{
-					v = TWSS_ISOB5;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB7")
-				{
-					v = TWSS_ISOB7;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB8")
-				{
-					v = TWSS_ISOB8;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB9")
-				{
-					v = TWSS_ISOB9;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_ISOB10")
-				{
-					v = TWSS_ISOB10;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB0")
-				{
-					v = TWSS_JISB0;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB1")
-				{
-					v = TWSS_JISB1;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB2")
-				{
-					v = TWSS_JISB2;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB3")
-				{
-					v = TWSS_JISB3;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB4")
-				{
-					v = TWSS_JISB4;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB6")
-				{
-					v = TWSS_JISB6;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB7")
-				{
-					v = TWSS_JISB7;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB8")
-				{
-					v = TWSS_JISB8;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB9")
-				{
-					v = TWSS_JISB9;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_JISB10")
-				{
-					v = TWSS_JISB10;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C0")
-				{
-					v = TWSS_C0;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C1")
-				{
-					v = TWSS_C1;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C2")
-				{
-					v = TWSS_C2;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C3")
-				{
-					v = TWSS_C3;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C7")
-				{
-					v = TWSS_C7;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C8")
-				{
-					v = TWSS_C8;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C9")
-				{
-					v = TWSS_C9;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_C10")
-				{
-					v = TWSS_C10;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_USSTATEMENT")
-				{
-					v = TWSS_USSTATEMENT;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_BUSINESSCARD")
-				{
-					v = TWSS_BUSINESSCARD;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSS_MAXSIZE")
-				//			{
-				//				v = TWSS_MAXSIZE;
-				//			}
-				
-			}
-				break;
-			case ICAP_XFERMECH:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSX_NATIVE")
-				{
-					v = TWSX_NATIVE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSX_FILE")
-				{
-					v = TWSX_FILE;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSX_MEMORY")
-				{
-					v = TWSX_MEMORY;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWSX_MEMFILE")
-				//			{
-				//				v = TWSX_MEMFILE;
-				//			}
-				
-			}
-				break;
-			case ICAP_UNITS:
-			{
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWUN_INCHES")
-				{
-					v = TWUN_INCHES;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWUN_CENTIMETERS")
-				{
-					v = TWUN_CENTIMETERS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWUN_PICAS")
-				{
-					v = TWUN_PICAS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWUN_POINTS")
-				{
-					v = TWUN_POINTS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWUN_TWIPS")
-				{
-					v = TWUN_TWIPS;
-				}
-				if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWUN_PIXELS")
-				{
-					v = TWUN_PIXELS;
-				}
-				//			if (std::wstring((const wchar_t *)s) == (const wchar_t *)"TWUN_MILLIMETERS")
-				//			{
-				//				v = TWUN_MILLIMETERS;
-				//			}
-				
-			}
-				break;
+
 		}
-		json_free(s);
+		break;
+		case ICAP_AUTODISCARDBLANKPAGES:
+		{
+			if (s.compare(L"TWBP_DISABLE") == 0)
+			{
+				v = TWBP_DISABLE;goto exit2;
+			}
+			if (s.compare(L"TWBP_AUTO") == 0)
+			{
+				v = TWBP_AUTO;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_CAMERASIDE:
+		{
+			if (s.compare(L"TWCS_BOTH") == 0)
+			{
+				v = TWCS_BOTH;goto exit2;
+			}
+			if (s.compare(L"TWCS_TOP") == 0)
+			{
+				v = TWCS_TOP;goto exit2;
+			}
+			if (s.compare(L"TWCS_BOTTOM") == 0)
+			{
+				v = TWCS_BOTTOM;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_FEEDERTYPE:
+		{
+			if (s.compare(L"TWFE_GENERAL") == 0)
+			{
+				v = TWFE_GENERAL;goto exit2;
+			}
+			if (s.compare(L"TWFE_PHOTO") == 0)
+			{
+				v = TWFE_PHOTO;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_FEEDERPOCKET:
+		{
+			if (s.compare(L"TWFP_POCKETERROR") == 0)
+			{
+				v = TWFP_POCKETERROR;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET1") == 0)
+			{
+				v = TWFP_POCKET1;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET2") == 0)
+			{
+				v = TWFP_POCKET2;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET3") == 0)
+			{
+				v = TWFP_POCKET3;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET4") == 0)
+			{
+				v = TWFP_POCKET4;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET5") == 0)
+			{
+				v = TWFP_POCKET5;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET6") == 0)
+			{
+				v = TWFP_POCKET6;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET7") == 0)
+			{
+				v = TWFP_POCKET7;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET8") == 0)
+			{
+				v = TWFP_POCKET8;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET9") == 0)
+			{
+				v = TWFP_POCKET9;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET10") == 0)
+			{
+				v = TWFP_POCKET10;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET11") == 0)
+			{
+				v = TWFP_POCKET11;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET12") == 0)
+			{
+				v = TWFP_POCKET12;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET13") == 0)
+			{
+				v = TWFP_POCKET13;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET14") == 0)
+			{
+				v = TWFP_POCKET14;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET15") == 0)
+			{
+				v = TWFP_POCKET15;goto exit2;
+			}
+			if (s.compare(L"TWFP_POCKET16") == 0)
+			{
+				v = TWFP_POCKET16;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_ICCPROFILE:
+		{
+			if (s.compare(L"TWIC_NONE") == 0)
+			{
+				v = TWIC_NONE;goto exit2;
+			}
+			if (s.compare(L"TWIC_LINK") == 0)
+			{
+				v = TWIC_LINK;goto exit2;
+			}
+			if (s.compare(L"TWIC_EMBED") == 0)
+			{
+				v = TWIC_EMBED;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_IMAGEMERGE:
+		{
+			if (s.compare(L"TWIM_NONE") == 0)
+			{
+				v = TWIM_NONE;goto exit2;
+			}
+			if (s.compare(L"TWIM_FRONTONTOP") == 0)
+			{
+				v = TWIM_FRONTONTOP;goto exit2;
+			}
+			if (s.compare(L"TWIM_FRONTONBOTTOM") == 0)
+			{
+				v = TWIM_FRONTONBOTTOM;goto exit2;
+			}
+			if (s.compare(L"TWIM_FRONTONLEFT") == 0)
+			{
+				v = TWIM_FRONTONLEFT;goto exit2;
+			}
+			if (s.compare(L"TWIM_FRONTONRIGHT") == 0)
+			{
+				v = TWIM_FRONTONRIGHT;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_SEGMENTED:
+		{
+			if (s.compare(L"TWSG_NONE") == 0)
+			{
+				v = TWSG_NONE;goto exit2;
+			}
+			if (s.compare(L"TWSG_AUTO") == 0)
+			{
+				v = TWSG_AUTO;goto exit2;
+			}
+			if (s.compare(L"TWSG_MANUAL") == 0)
+			{
+				v = TWSG_MANUAL;goto exit2;
+			}
+
+		}
+		break;
+#endif
+		case CAP_ALARMS:
+		{
+			if (s.compare(L"TWAL_ALARM") == 0)
+			{
+				v = TWAL_ALARM;goto exit2;
+			}
+			if (s.compare(L"TWAL_FEEDERERROR") == 0)
+			{
+				v = TWAL_FEEDERERROR;goto exit2;
+			}
+			if (s.compare(L"TWAL_FEEDERWARNING") == 0)
+			{
+				v = TWAL_FEEDERWARNING;goto exit2;
+			}
+			if (s.compare(L"TWAL_BARCODE") == 0)
+			{
+				v = TWAL_BARCODE;goto exit2;
+			}
+			if (s.compare(L"TWAL_DOUBLEFEED") == 0)
+			{
+				v = TWAL_DOUBLEFEED;goto exit2;
+			}
+			if (s.compare(L"TWAL_JAM") == 0)
+			{
+				v = TWAL_JAM;goto exit2;
+			}
+			if (s.compare(L"TWAL_PATCHCODE") == 0)
+			{
+				v = TWAL_PATCHCODE;goto exit2;
+			}
+			if (s.compare(L"TWAL_POWER") == 0)
+			{
+				v = TWAL_POWER;goto exit2;
+			}
+			if (s.compare(L"TWAL_SKEW") == 0)
+			{
+				v = TWAL_SKEW;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_COMPRESSION:
+		{
+			if (s.compare(L"TWCP_NONE") == 0)
+			{
+				v = TWCP_NONE;goto exit2;
+			}
+			if (s.compare(L"TWCP_PACKBITS") == 0)
+			{
+				v = TWCP_PACKBITS;goto exit2;
+			}
+			if (s.compare(L"TWCP_GROUP31D") == 0)
+			{
+				v = TWCP_GROUP31D;goto exit2;
+			}
+			if (s.compare(L"TWCP_GROUP31DEOL") == 0)
+			{
+				v = TWCP_GROUP31DEOL;goto exit2;
+			}
+			if (s.compare(L"TWCP_GROUP32D") == 0)
+			{
+				v = TWCP_GROUP32D;goto exit2;
+			}
+			if (s.compare(L"TWCP_GROUP4") == 0)
+			{
+				v = TWCP_GROUP4;goto exit2;
+			}
+			if (s.compare(L"TWCP_JPEG") == 0)
+			{
+				v = TWCP_JPEG;goto exit2;
+			}
+			if (s.compare(L"TWCP_LZW") == 0)
+			{
+				v = TWCP_LZW;goto exit2;
+			}
+			if (s.compare(L"TWCP_JBIG") == 0)
+			{
+				v = TWCP_JBIG;goto exit2;
+			}
+			if (s.compare(L"TWCP_PNG") == 0)
+			{
+				v = TWCP_PNG;goto exit2;
+			}
+			if (s.compare(L"TWCP_RLE4") == 0)
+			{
+				v = TWCP_RLE4;goto exit2;
+			}
+			if (s.compare(L"TWCP_RLE8") == 0)
+			{
+				v = TWCP_RLE8;goto exit2;
+			}
+			if (s.compare(L"TWCP_BITFIELDS") == 0)
+			{
+				v = TWCP_BITFIELDS;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_BARCODESEARCHMODE:
+		{
+			if (s.compare(L"TWBD_HORZ") == 0)
+			{
+				v = TWBD_HORZ;goto exit2;
+			}
+			if (s.compare(L"TWBD_VERT") == 0)
+			{
+				v = TWBD_VERT;goto exit2;
+			}
+			if (s.compare(L"TWBD_HORZVERT") == 0)
+			{
+				v = TWBD_HORZVERT;goto exit2;
+			}
+			if (s.compare(L"TWBD_VERTHORZ") == 0)
+			{
+				v = TWBD_VERTHORZ;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_BITORDER:
+		{
+			if (s.compare(L"TWBO_LSBFIRST") == 0)
+			{
+				v = TWBO_LSBFIRST;goto exit2;
+			}
+			if (s.compare(L"TWBO_MSBFIRST") == 0)
+			{
+				v = TWBO_MSBFIRST;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_BITDEPTHREDUCTION:
+		{
+			if (s.compare(L"TWBR_THRESHOLD") == 0)
+			{
+				v = TWBR_THRESHOLD;goto exit2;
+			}
+			if (s.compare(L"TWBR_HALFTONE") == 0)
+			{
+				v = TWBR_HALFTONE;goto exit2;
+			}
+			if (s.compare(L"TWBR_CUSTHALFTONE") == 0)
+			{
+				v = TWBR_CUSTHALFTONE;goto exit2;
+			}
+			if (s.compare(L"TWBR_DIFFUSION") == 0)
+			{
+				v = TWBR_DIFFUSION;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_SUPPORTEDBARCODETYPES:
+		case TWEI_BARCODETYPE:
+		{
+			if (s.compare(L"TWBT_3OF9") == 0)
+			{
+				v = TWBT_3OF9;goto exit2;
+			}
+			if (s.compare(L"TWBT_2OF5INTERLEAVED") == 0)
+			{
+				v = TWBT_2OF5INTERLEAVED;goto exit2;
+			}
+			if (s.compare(L"TWBT_2OF5NONINTERLEAVED") == 0)
+			{
+				v = TWBT_2OF5NONINTERLEAVED;goto exit2;
+			}
+			if (s.compare(L"TWBT_CODE93") == 0)
+			{
+				v = TWBT_CODE93;goto exit2;
+			}
+			if (s.compare(L"TWBT_CODE128") == 0)
+			{
+				v = TWBT_CODE128;goto exit2;
+			}
+			if (s.compare(L"TWBT_UCC128") == 0)
+			{
+				v = TWBT_UCC128;goto exit2;
+			}
+			if (s.compare(L"TWBT_CODABAR") == 0)
+			{
+				v = TWBT_CODABAR;goto exit2;
+			}
+			if (s.compare(L"TWBT_UPCA") == 0)
+			{
+				v = TWBT_UPCA;goto exit2;
+			}
+			if (s.compare(L"TWBT_UPCE") == 0)
+			{
+				v = TWBT_UPCE;goto exit2;
+			}
+			if (s.compare(L"TWBT_EAN8") == 0)
+			{
+				v = TWBT_EAN8;goto exit2;
+			}
+			if (s.compare(L"TWBT_EAN13") == 0)
+			{
+				v = TWBT_EAN13;goto exit2;
+			}
+			if (s.compare(L"TWBT_POSTNET") == 0)
+			{
+				v = TWBT_POSTNET;goto exit2;
+			}
+			if (s.compare(L"TWBT_PDF417") == 0)
+			{
+				v = TWBT_PDF417;goto exit2;
+			}
+			if (s.compare(L"TWBT_2OF5INDUSTRIAL") == 0)
+			{
+				v = TWBT_2OF5INDUSTRIAL;goto exit2;
+			}
+			if (s.compare(L"TWBT_2OF5MATRIX") == 0)
+			{
+				v = TWBT_2OF5MATRIX;goto exit2;
+			}
+			if (s.compare(L"TWBT_2OF5DATALOGIC") == 0)
+			{
+				v = TWBT_2OF5DATALOGIC;goto exit2;
+			}
+			if (s.compare(L"TWBT_2OF5IATA") == 0)
+			{
+				v = TWBT_2OF5IATA;goto exit2;
+			}
+			if (s.compare(L"TWBT_3OF9FULLASCII") == 0)
+			{
+				v = TWBT_3OF9FULLASCII;goto exit2;
+			}
+			if (s.compare(L"TWBT_CODABARWITHSTARTSTOP") == 0)
+			{
+				v = TWBT_CODABARWITHSTARTSTOP;goto exit2;
+			}
+			if (s.compare(L"TWBT_MAXICODE") == 0)
+			{
+				v = TWBT_MAXICODE;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_CLEARBUFFERS:
+		{
+			if (s.compare(L"TWCB_AUTO") == 0)
+			{
+				v = TWCB_AUTO;goto exit2;
+			}
+			if (s.compare(L"TWCB_CLEAR") == 0)
+			{
+				v = TWCB_CLEAR;goto exit2;
+			}
+			if (s.compare(L"TWCB_NOCLEAR") == 0)
+			{
+				v = TWCB_NOCLEAR;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_DEVICEEVENT:
+		{
+			if (s.compare(L"TWDE_CUSTOMEVENTS") == 0)
+			{
+				v = TWDE_CUSTOMEVENTS;goto exit2;
+			}
+			if (s.compare(L"TWDE_CHECKAUTOMATICCAPTURE") == 0)
+			{
+				v = TWDE_CHECKAUTOMATICCAPTURE;goto exit2;
+			}
+			if (s.compare(L"TWDE_CHECKBATTERY") == 0)
+			{
+				v = TWDE_CHECKBATTERY;goto exit2;
+			}
+			if (s.compare(L"TWDE_CHECKDEVICEONLINE") == 0)
+			{
+				v = TWDE_CHECKDEVICEONLINE;goto exit2;
+			}
+			if (s.compare(L"TWDE_CHECKFLASH") == 0)
+			{
+				v = TWDE_CHECKFLASH;goto exit2;
+			}
+			if (s.compare(L"TWDE_CHECKPOWERSUPPLY") == 0)
+			{
+				v = TWDE_CHECKPOWERSUPPLY;goto exit2;
+			}
+			if (s.compare(L"TWDE_CHECKRESOLUTION") == 0)
+			{
+				v = TWDE_CHECKRESOLUTION;goto exit2;
+			}
+			if (s.compare(L"TWDE_DEVICEADDED") == 0)
+			{
+				v = TWDE_DEVICEADDED;goto exit2;
+			}
+			if (s.compare(L"TWDE_DEVICEOFFLINE") == 0)
+			{
+				v = TWDE_DEVICEOFFLINE;goto exit2;
+			}
+			if (s.compare(L"TWDE_DEVICEREADY") == 0)
+			{
+				v = TWDE_DEVICEREADY;goto exit2;
+			}
+			if (s.compare(L"TWDE_DEVICEREMOVED") == 0)
+			{
+				v = TWDE_DEVICEREMOVED;goto exit2;
+			}
+			if (s.compare(L"TWDE_IMAGECAPTURED") == 0)
+			{
+				v = TWDE_IMAGECAPTURED;goto exit2;
+			}
+			if (s.compare(L"TWDE_IMAGEDELETED") == 0)
+			{
+				v = TWDE_IMAGEDELETED;goto exit2;
+			}
+			if (s.compare(L"TWDE_PAPERDOUBLEFEED") == 0)
+			{
+				v = TWDE_PAPERDOUBLEFEED;goto exit2;
+			}
+			if (s.compare(L"TWDE_PAPERJAM") == 0)
+			{
+				v = TWDE_PAPERJAM;goto exit2;
+			}
+			if (s.compare(L"TWDE_LAMPFAILURE") == 0)
+			{
+				v = TWDE_LAMPFAILURE;goto exit2;
+			}
+			if (s.compare(L"TWDE_POWERSAVE") == 0)
+			{
+				v = TWDE_POWERSAVE;goto exit2;
+			}
+			if (s.compare(L"TWDE_POWERSAVENOTIFY") == 0)
+			{
+				v = TWDE_POWERSAVENOTIFY;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_DUPLEX:
+		{
+			if (s.compare(L"TWDX_NONE") == 0)
+			{
+				v = TWDX_NONE;goto exit2;
+			}
+			if (s.compare(L"TWDX_1PASSDUPLEX") == 0)
+			{
+				v = TWDX_1PASSDUPLEX;goto exit2;
+			}
+			if (s.compare(L"TWDX_2PASSDUPLEX") == 0)
+			{
+				v = TWDX_2PASSDUPLEX;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_FEEDERALIGNMENT:
+		{
+			if (s.compare(L"TWFA_NONE") == 0)
+			{
+				v = TWFA_NONE;goto exit2;
+			}
+			if (s.compare(L"TWFA_LEFT") == 0)
+			{
+				v = TWFA_LEFT;goto exit2;
+			}
+			if (s.compare(L"TWFA_CENTER") == 0)
+			{
+				v = TWFA_CENTER;goto exit2;
+			}
+			if (s.compare(L"TWFA_RIGHT") == 0)
+			{
+				v = TWFA_RIGHT;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_IMAGEFILEFORMAT:
+		{
+			if (s.compare(L"TWFF_TIFF") == 0)
+			{
+				v = TWFF_TIFF;goto exit2;
+			}
+			if (s.compare(L"TWFF_PICT") == 0)
+			{
+				v = TWFF_PICT;goto exit2;
+			}
+			if (s.compare(L"TWFF_BMP") == 0)
+			{
+				v = TWFF_BMP;goto exit2;
+			}
+			if (s.compare(L"TWFF_XBM") == 0)
+			{
+				v = TWFF_XBM;goto exit2;
+			}
+			if (s.compare(L"TWFF_JFIF") == 0)
+			{
+				v = TWFF_JFIF;goto exit2;
+			}
+			if (s.compare(L"TWFF_FPX") == 0)
+			{
+				v = TWFF_FPX;goto exit2;
+			}
+			if (s.compare(L"TWFF_TIFFMULTI") == 0)
+			{
+				v = TWFF_TIFFMULTI;goto exit2;
+			}
+			if (s.compare(L"TWFF_PNG") == 0)
+			{
+				v = TWFF_PNG;goto exit2;
+			}
+			if (s.compare(L"TWFF_SPIFF") == 0)
+			{
+				v = TWFF_SPIFF;goto exit2;
+			}
+			if (s.compare(L"TWFF_EXIF") == 0)
+			{
+				v = TWFF_EXIF;goto exit2;
+			}
+			if (s.compare(L"TWFF_PDF") == 0)
+			{
+				v = 10;goto exit2;
+			}
+			if (s.compare(L"TWFF_JP2") == 0)
+			{
+				v = 11;goto exit2;
+			}
+			if (s.compare(L"TWFF_JPN") == 0)
+			{
+				v = 12;goto exit2;
+			}
+			if (s.compare(L"TWFF_JPX") == 0)
+			{
+				v = 13;goto exit2;
+			}
+			if (s.compare(L"TWFF_DEJAVU") == 0)
+			{
+				v = 14;goto exit2;
+			}
+			if (s.compare(L"TWFF_PDFA") == 0)
+			{
+				v = 15;goto exit2;
+			}
+			if (s.compare(L"TWFF_PDFA2") == 0)
+			{
+				v = 16;goto exit2;
+			}
+		}
+		break;
+		case ICAP_FLASHUSED2:
+		{
+			if (s.compare(L"TWFL_NONE") == 0)
+			{
+				v = TWFL_NONE;goto exit2;
+			}
+			if (s.compare(L"TWFL_OFF") == 0)
+			{
+				v = TWFL_OFF;goto exit2;
+			}
+			if (s.compare(L"TWFL_ON") == 0)
+			{
+				v = TWFL_ON;goto exit2;
+			}
+			if (s.compare(L"TWFL_AUTO") == 0)
+			{
+				v = TWFL_AUTO;goto exit2;
+			}
+			if (s.compare(L"TWFL_REDEYE") == 0)
+			{
+				v = TWFL_REDEYE;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_FEEDERORDER:
+		{
+			if (s.compare(L"TWFO_FIRSTPAGEFIRST") == 0)
+			{
+				v = TWFO_FIRSTPAGEFIRST;goto exit2;
+			}
+			if (s.compare(L"TWFO_LASTPAGEFIRST") == 0)
+			{
+				v = TWFO_LASTPAGEFIRST;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_FLIPROTATION:
+		{
+			if (s.compare(L"TWFR_BOOK") == 0)
+			{
+				v = TWFR_BOOK;goto exit2;
+			}
+			if (s.compare(L"TWFR_FANFOLD") == 0)
+			{
+				v = TWFR_FANFOLD;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_FILTER:
+		{
+			if (s.compare(L"TWFT_RED") == 0)
+			{
+				v = TWFT_RED;goto exit2;
+			}
+			if (s.compare(L"TWFT_GREEN") == 0)
+			{
+				v = TWFT_GREEN;goto exit2;
+			}
+			if (s.compare(L"TWFT_BLUE") == 0)
+			{
+				v = TWFT_BLUE;goto exit2;
+			}
+			if (s.compare(L"TWFT_NONE") == 0)
+			{
+				v = TWFT_NONE;goto exit2;
+			}
+			if (s.compare(L"TWFT_WHITE") == 0)
+			{
+				v = TWFT_WHITE;goto exit2;
+			}
+			if (s.compare(L"TWFT_CYAN") == 0)
+			{
+				v = TWFT_CYAN;goto exit2;
+			}
+			if (s.compare(L"TWFT_MAGENTA") == 0)
+			{
+				v = TWFT_MAGENTA;goto exit2;
+			}
+			if (s.compare(L"TWFT_YELLOW") == 0)
+			{
+				v = TWFT_YELLOW;goto exit2;
+			}
+			if (s.compare(L"TWFT_BLACK") == 0)
+			{
+				v = TWFT_BLACK;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_IMAGEFILTER:
+		{
+			if (s.compare(L"TWIF_NONE") == 0)
+			{
+				v = TWIF_NONE;goto exit2;
+			}
+			if (s.compare(L"TWIF_AUTO") == 0)
+			{
+				v = TWIF_AUTO;goto exit2;
+			}
+			if (s.compare(L"TWIF_LOWPASS") == 0)
+			{
+				v = TWIF_LOWPASS;goto exit2;
+			}
+			if (s.compare(L"TWIF_BANDPASS") == 0)
+			{
+				v = TWIF_BANDPASS;goto exit2;
+			}
+			if (s.compare(L"TWIF_HIGHPASS") == 0)
+			{
+				v = TWIF_HIGHPASS;goto exit2;
+			}
+			if (s.compare(L"TWIF_TEXT") == 0)
+			{
+				v = TWIF_TEXT;goto exit2;
+			}
+			if (s.compare(L"TWIF_FINELINE") == 0)
+			{
+				v = TWIF_FINELINE;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_JOBCONTROL:
+		{
+			if (s.compare(L"TWJC_NONE") == 0)
+			{
+				v = TWJC_NONE;goto exit2;
+			}
+			if (s.compare(L"TWJC_JSIC") == 0)
+			{
+				v = TWJC_JSIC;goto exit2;
+			}
+			if (s.compare(L"TWJC_JSIS") == 0)
+			{
+				v = TWJC_JSIS;goto exit2;
+			}
+			if (s.compare(L"TWJC_JSXC") == 0)
+			{
+				v = TWJC_JSXC;goto exit2;
+			}
+			if (s.compare(L"TWJC_JSXS") == 0)
+			{
+				v = TWJC_JSXS;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_JPEGQUALITY:
+		{
+			if (s.compare(L"TWJQ_UNKNOWN") == 0)
+			{
+				v = TWJQ_UNKNOWN;goto exit2;
+			}
+			if (s.compare(L"TWJQ_LOW") == 0)
+			{
+				v = TWJQ_LOW;goto exit2;
+			}
+			if (s.compare(L"TWJQ_MEDIUM") == 0)
+			{
+				v = TWJQ_MEDIUM;goto exit2;
+			}
+			if (s.compare(L"TWJQ_HIGH") == 0)
+			{
+				v = TWJQ_HIGH;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_LIGHTPATH:
+		{
+			if (s.compare(L"TWLP_REFLECTIVE") == 0)
+			{
+				v = TWLP_REFLECTIVE;goto exit2;
+			}
+			if (s.compare(L"TWLP_TRANSMISSIVE") == 0)
+			{
+				v = TWLP_TRANSMISSIVE;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_LIGHTSOURCE:
+		{
+			if (s.compare(L"TWLS_RED") == 0)
+			{
+				v = TWLS_RED;goto exit2;
+			}
+			if (s.compare(L"TWLS_GREEN") == 0)
+			{
+				v = TWLS_GREEN;goto exit2;
+			}
+			if (s.compare(L"TWLS_BLUE") == 0)
+			{
+				v = TWLS_BLUE;goto exit2;
+			}
+			if (s.compare(L"TWLS_NONE") == 0)
+			{
+				v = TWLS_NONE;goto exit2;
+			}
+			if (s.compare(L"TWLS_WHITE") == 0)
+			{
+				v = TWLS_WHITE;goto exit2;
+			}
+			if (s.compare(L"TWLS_UV") == 0)
+			{
+				v = TWLS_UV;goto exit2;
+			}
+			if (s.compare(L"TWLS_IR") == 0)
+			{
+				v = TWLS_IR;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_NOISEFILTER:
+		{
+			if (s.compare(L"TWNF_NONE") == 0)
+			{
+				v = TWNF_NONE;goto exit2;
+			}
+			if (s.compare(L"TWNF_AUTO") == 0)
+			{
+				v = TWNF_AUTO;goto exit2;
+			}
+			if (s.compare(L"TWNF_LONEPIXEL") == 0)
+			{
+				v = TWNF_LONEPIXEL;goto exit2;
+			}
+			if (s.compare(L"TWNF_MAJORITYRULE") == 0)
+			{
+				v = TWNF_MAJORITYRULE;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_ORIENTATION:
+		{
+			if (s.compare(L"TWOR_ROT0") == 0)
+			{
+				v = TWOR_ROT0;goto exit2;
+			}
+			if (s.compare(L"TWOR_ROT90") == 0)
+			{
+				v = TWOR_ROT90;goto exit2;
+			}
+			if (s.compare(L"TWOR_ROT180") == 0)
+			{
+				v = TWOR_ROT180;goto exit2;
+			}
+			if (s.compare(L"TWOR_ROT270") == 0)
+			{
+				v = TWOR_ROT270;goto exit2;
+			}
+			if (s.compare(L"TWOR_PORTRAIT") == 0)
+			{
+				v = TWOR_PORTRAIT;goto exit2;
+			}
+			if (s.compare(L"TWOR_LANDSCAPE") == 0)
+			{
+				v = TWOR_LANDSCAPE;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_OVERSCAN:
+		{
+			if (s.compare(L"TWOV_NONE") == 0)
+			{
+				v = TWOV_NONE;goto exit2;
+			}
+			if (s.compare(L"TWOV_AUTO") == 0)
+			{
+				v = TWOV_AUTO;goto exit2;
+			}
+			if (s.compare(L"TWOV_TOPBOTTOM") == 0)
+			{
+				v = TWOV_TOPBOTTOM;goto exit2;
+			}
+			if (s.compare(L"TWOV_LEFTRIGHT") == 0)
+			{
+				v = TWOV_LEFTRIGHT;goto exit2;
+			}
+			if (s.compare(L"TWOV_ALL") == 0)
+			{
+				v = TWOV_ALL;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_PLANARCHUNKY:
+		{
+			if (s.compare(L"TWPC_CHUNKY") == 0)
+			{
+				v = TWPC_CHUNKY;goto exit2;
+			}
+			if (s.compare(L"TWPC_PLANAR") == 0)
+			{
+				v = TWPC_PLANAR;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_PIXELFLAVOR:
+		{
+			if (s.compare(L"TWPF_CHOCOLATE") == 0)
+			{
+				v = TWPF_CHOCOLATE;goto exit2;
+			}
+			if (s.compare(L"TWPF_VANILLA") == 0)
+			{
+				v = TWPF_VANILLA;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_PRINTERMODE:
+		{
+			if (s.compare(L"TWPM_SINGLESTRING") == 0)
+			{
+				v = TWPM_SINGLESTRING;goto exit2;
+			}
+			if (s.compare(L"TWPM_MULTISTRING") == 0)
+			{
+				v = TWPM_MULTISTRING;goto exit2;
+			}
+			if (s.compare(L"TWPM_COMPOUNDSTRING") == 0)
+			{
+				v = TWPM_COMPOUNDSTRING;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_PRINTER:
+		{
+			if (s.compare(L"TWPR_IMPRINTERTOPBEFORE") == 0)
+			{
+				v = TWPR_IMPRINTERTOPBEFORE;goto exit2;
+			}
+			if (s.compare(L"TWPR_IMPRINTERTOPAFTER") == 0)
+			{
+				v = TWPR_IMPRINTERTOPAFTER;goto exit2;
+			}
+			if (s.compare(L"TWPR_IMPRINTERBOTTOMBEFORE") == 0)
+			{
+				v = TWPR_IMPRINTERBOTTOMBEFORE;goto exit2;
+			}
+			if (s.compare(L"TWPR_IMPRINTERBOTTOMAFTER") == 0)
+			{
+				v = TWPR_IMPRINTERBOTTOMAFTER;goto exit2;
+			}
+			if (s.compare(L"TWPR_ENDORSERTOPBEFORE") == 0)
+			{
+				v = TWPR_ENDORSERTOPBEFORE;goto exit2;
+			}
+			if (s.compare(L"TWPR_ENDORSERTOPAFTER") == 0)
+			{
+				v = TWPR_ENDORSERTOPAFTER;goto exit2;
+			}
+			if (s.compare(L"TWPR_ENDORSERBOTTOMBEFORE") == 0)
+			{
+				v = TWPR_ENDORSERBOTTOMBEFORE;goto exit2;
+			}
+			if (s.compare(L"TWPR_ENDORSERBOTTOMAFTER") == 0)
+			{
+				v = TWPR_ENDORSERBOTTOMAFTER;goto exit2;
+			}
+
+		}
+		break;
+		case CAP_POWERSUPPLY:
+		{
+			if (s.compare(L"TWPS_EXTERNAL") == 0)
+			{
+				v = TWPS_EXTERNAL;goto exit2;
+			}
+			if (s.compare(L"TWPS_BATTERY") == 0)
+			{
+				v = TWPS_BATTERY;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_PIXELTYPE:
+		{
+			if (s.compare(L"TWPT_BW") == 0)
+			{
+				v = TWPT_BW;goto exit2;
+			}
+			if (s.compare(L"TWPT_GRAY") == 0)
+			{
+				v = TWPT_GRAY;goto exit2;
+			}
+			if (s.compare(L"TWPT_RGB") == 0)
+			{
+				v = TWPT_RGB;goto exit2;
+			}
+			if (s.compare(L"TWPT_PALETTE") == 0)
+			{
+				v = TWPT_PALETTE;goto exit2;
+			}
+			if (s.compare(L"TWPT_CMY") == 0)
+			{
+				v = TWPT_CMY;goto exit2;
+			}
+			if (s.compare(L"TWPT_CMYK") == 0)
+			{
+				v = TWPT_CMYK;goto exit2;
+			}
+			if (s.compare(L"TWPT_YUV") == 0)
+			{
+				v = TWPT_YUV;goto exit2;
+			}
+			if (s.compare(L"TWPT_YUVK") == 0)
+			{
+				v = TWPT_YUVK;goto exit2;
+			}
+			if (s.compare(L"TWPT_CIEXYZ") == 0)
+			{
+				v = TWPT_CIEXYZ;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_SUPPORTEDSIZES:
+		{
+			if (s.compare(L"TWSS_NONE") == 0)
+			{
+				v = TWSS_NONE;goto exit2;
+			}
+			if (s.compare(L"TWSS_A4") == 0)
+			{
+				v = TWSS_A4;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB5") == 0)
+			{
+				v = TWSS_JISB5;goto exit2;
+			}
+			if (s.compare(L"TWSS_USLETTER") == 0)
+			{
+				v = TWSS_USLETTER;goto exit2;
+			}
+			if (s.compare(L"TWSS_USLEGAL") == 0)
+			{
+				v = TWSS_USLEGAL;goto exit2;
+			}
+			if (s.compare(L"TWSS_A5") == 0)
+			{
+				v = TWSS_A5;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB4") == 0)
+			{
+				v = TWSS_ISOB4;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB6") == 0)
+			{
+				v = TWSS_ISOB6;goto exit2;
+			}
+			if (s.compare(L"TWSS_USLEDGER") == 0)
+			{
+				v = TWSS_USLEDGER;goto exit2;
+			}
+			if (s.compare(L"TWSS_USEXECUTIVE") == 0)
+			{
+				v = TWSS_USEXECUTIVE;goto exit2;
+			}
+			if (s.compare(L"TWSS_A3") == 0)
+			{
+				v = TWSS_A3;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB3") == 0)
+			{
+				v = TWSS_ISOB3;goto exit2;
+			}
+			if (s.compare(L"TWSS_A6") == 0)
+			{
+				v = TWSS_A6;goto exit2;
+			}
+			if (s.compare(L"TWSS_C4") == 0)
+			{
+				v = TWSS_C4;goto exit2;
+			}
+			if (s.compare(L"TWSS_C5") == 0)
+			{
+				v = TWSS_C5;goto exit2;
+			}
+			if (s.compare(L"TWSS_C6") == 0)
+			{
+				v = TWSS_C6;goto exit2;
+			}
+			if (s.compare(L"TWSS_4A0") == 0)
+			{
+				v = TWSS_4A0;goto exit2;
+			}
+			if (s.compare(L"TWSS_2A0") == 0)
+			{
+				v = TWSS_2A0;goto exit2;
+			}
+			if (s.compare(L"TWSS_A0") == 0)
+			{
+				v = TWSS_A0;goto exit2;
+			}
+			if (s.compare(L"TWSS_A1") == 0)
+			{
+				v = TWSS_A1;goto exit2;
+			}
+			if (s.compare(L"TWSS_A2") == 0)
+			{
+				v = TWSS_A2;goto exit2;
+			}
+			if (s.compare(L"TWSS_A7") == 0)
+			{
+				v = TWSS_A7;goto exit2;
+			}
+			if (s.compare(L"TWSS_A8") == 0)
+			{
+				v = TWSS_A8;goto exit2;
+			}
+			if (s.compare(L"TWSS_A9") == 0)
+			{
+				v = TWSS_A9;goto exit2;
+			}
+			if (s.compare(L"TWSS_A10") == 0)
+			{
+				v = TWSS_A10;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB0") == 0)
+			{
+				v = TWSS_ISOB0;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB1") == 0)
+			{
+				v = TWSS_ISOB1;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB2") == 0)
+			{
+				v = TWSS_ISOB2;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB5") == 0)
+			{
+				v = TWSS_ISOB5;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB7") == 0)
+			{
+				v = TWSS_ISOB7;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB8") == 0)
+			{
+				v = TWSS_ISOB8;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB9") == 0)
+			{
+				v = TWSS_ISOB9;goto exit2;
+			}
+			if (s.compare(L"TWSS_ISOB10") == 0)
+			{
+				v = TWSS_ISOB10;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB0") == 0)
+			{
+				v = TWSS_JISB0;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB1") == 0)
+			{
+				v = TWSS_JISB1;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB2") == 0)
+			{
+				v = TWSS_JISB2;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB3") == 0)
+			{
+				v = TWSS_JISB3;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB4") == 0)
+			{
+				v = TWSS_JISB4;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB6") == 0)
+			{
+				v = TWSS_JISB6;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB7") == 0)
+			{
+				v = TWSS_JISB7;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB8") == 0)
+			{
+				v = TWSS_JISB8;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB9") == 0)
+			{
+				v = TWSS_JISB9;goto exit2;
+			}
+			if (s.compare(L"TWSS_JISB10") == 0)
+			{
+				v = TWSS_JISB10;goto exit2;
+			}
+			if (s.compare(L"TWSS_C0") == 0)
+			{
+				v = TWSS_C0;goto exit2;
+			}
+			if (s.compare(L"TWSS_C1") == 0)
+			{
+				v = TWSS_C1;goto exit2;
+			}
+			if (s.compare(L"TWSS_C2") == 0)
+			{
+				v = TWSS_C2;goto exit2;
+			}
+			if (s.compare(L"TWSS_C3") == 0)
+			{
+				v = TWSS_C3;goto exit2;
+			}
+			if (s.compare(L"TWSS_C7") == 0)
+			{
+				v = TWSS_C7;goto exit2;
+			}
+			if (s.compare(L"TWSS_C8") == 0)
+			{
+				v = TWSS_C8;goto exit2;
+			}
+			if (s.compare(L"TWSS_C9") == 0)
+			{
+				v = TWSS_C9;goto exit2;
+			}
+			if (s.compare(L"TWSS_C10") == 0)
+			{
+				v = TWSS_C10;goto exit2;
+			}
+			if (s.compare(L"TWSS_USSTATEMENT") == 0)
+			{
+				v = TWSS_USSTATEMENT;goto exit2;
+			}
+			if (s.compare(L"TWSS_BUSINESSCARD") == 0)
+			{
+				v = TWSS_BUSINESSCARD;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_XFERMECH:
+		{
+			if (s.compare(L"TWSX_NATIVE") == 0)
+			{
+				v = TWSX_NATIVE;goto exit2;
+			}
+			if (s.compare(L"TWSX_FILE") == 0)
+			{
+				v = TWSX_FILE;goto exit2;
+			}
+			if (s.compare(L"TWSX_MEMORY") == 0)
+			{
+				v = TWSX_MEMORY;goto exit2;
+			}
+
+		}
+		break;
+		case ICAP_UNITS:
+		{
+			if (s.compare(L"TWUN_INCHES") == 0)
+			{
+				v = TWUN_INCHES;goto exit2;
+			}
+			if (s.compare(L"TWUN_CENTIMETERS") == 0)
+			{
+				v = TWUN_CENTIMETERS;goto exit2;
+			}
+			if (s.compare(L"TWUN_PICAS") == 0)
+			{
+				v = TWUN_PICAS;goto exit2;
+			}
+			if (s.compare(L"TWUN_POINTS") == 0)
+			{
+				v = TWUN_POINTS;goto exit2;
+			}
+			if (s.compare(L"TWUN_TWIPS") == 0)
+			{
+				v = TWUN_TWIPS;goto exit2;
+			}
+			if (s.compare(L"TWUN_PIXELS") == 0)
+			{
+				v = TWUN_PIXELS;goto exit2;
+			}
+
+		}
+		break;
+		}
+
+	exit2:
+		json_free(name);
 	}
-	
+
 	return v;
 }
-
 int getSizeForItemType(TW_UINT16 itemType)
 {
 	switch(itemType)

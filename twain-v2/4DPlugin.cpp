@@ -759,7 +759,7 @@ void TWAIN_SCAN(sLONG_PTR *pResult, PackagePtr pParams)
 	
 	if(scanEvent_p)
 	{
-		C_TEXT Param2_option; /* not used */
+		//C_TEXT Param2_option; /* not used */
 		
 		HANDLE fmIn = createFmIn1(Param1_scanner,
 															Param2_option,
@@ -845,11 +845,33 @@ void TWAIN_SCAN(sLONG_PTR *pResult, PackagePtr pParams)
 		{
 			std::vector<uint8_t>buf(outbuffersize);
 			memcpy(&buf[0], p, outbuffersize);
-			PA_Picture picture = PA_CreatePicture((void *)&buf[0], outbuffersize);
-			PA_long32 count = PA_GetArrayNbElements(Param4);
-			count++;
-			PA_ResizeArray(&Param4, count);
-			PA_SetPictureInArray(Param4, count, picture);
+			if (format == 1)
+			{
+#define CMU_BLOB_TO_PICTURE 682
+
+				PA_Variable args[3];
+				args[0] = PA_CreateVariable(eVK_Blob);
+				args[1] = PA_CreateVariable(eVK_Picture);
+				args[2] = PA_CreateVariable(eVK_Unistring);
+				PA_SetBlobVariable(&args[0], (void *)&buf[0], outbuffersize);
+				PA_SetUnistring((&(args[2].uValue.fString)), (PA_Unichar *)"e\0n\0c\0a\0p\0s\0u\0l\0a\0t\0i\0o\0n\0\0\0");
+				PA_ExecuteCommandByID(CMU_BLOB_TO_PICTURE, args, 3);
+				PA_Picture picture = PA_DuplicatePicture(PA_GetPictureVariable(args[1]), 1);
+				PA_ClearVariable(&args[1]);
+				PA_long32 count = PA_GetArrayNbElements(Param4);
+				count++;
+				PA_ResizeArray(&Param4, count);
+				PA_SetPictureInArray(Param4, count, picture);
+			}
+			else
+			{
+				PA_Picture picture = PA_CreatePicture((void *)&buf[0], outbuffersize);
+				PA_long32 count = PA_GetArrayNbElements(Param4);
+				count++;
+				PA_ResizeArray(&Param4, count);
+				PA_SetPictureInArray(Param4, count, picture);
+			}
+
 		}
 		p += outbuffersize;
 		totalsize += sizeof(outbuffersize);
@@ -899,6 +921,294 @@ void doScan(C_TEXT &Param1_scanner,
 		
 		if(tw_ret == TWRC_SUCCESS)
 		{
+			if (option)
+			{
+				if (json_type(option) == JSON_NODE)
+				{
+					JSONNODE_ITERATOR i = json_begin(option);
+					while (i != json_end(option))
+					{
+						if (*i)
+						{
+							TW_UINT16 cap = 0;
+							json_char *name = json_name(*i);
+							if (name)
+							{
+								cap = json_get_cap(name);
+								json_free(name);
+							}
+
+							if (cap)
+							{
+								TW_CAPABILITY tw_capability;
+								memset(&tw_capability, 0, sizeof(TW_CAPABILITY));
+
+								tw_capability.Cap = cap;
+								tw_capability.ConType = 0;
+								tw_capability.hContainer = 0;
+
+								/* find value type */
+
+								if (TWRC_SUCCESS == DSM_Entry(
+									&tw_identity,
+									&tw_source_identity,
+									DG_CONTROL,
+									DAT_CAPABILITY,
+									MSG_GET,
+									(TW_MEMREF)&tw_capability))
+								{
+									TW_UINT16 itemType = 0;
+									TW_UINT32 numItems = 0;
+									TW_UINT32 contSize = 0;
+
+									void *_p = DSM::Lock(&tw_entrypoint, tw_capability.hContainer);
+
+									switch (tw_capability.ConType)
+									{
+									case TWON_ARRAY:
+
+										break;
+									case TWON_ENUMERATION:
+										itemType = ((pTW_ENUMERATION)_p)->ItemType;
+										numItems = ((pTW_ENUMERATION)_p)->NumItems;
+										contSize = sizeof(TW_ENUMERATION) + (getSizeForItemType(itemType) * numItems);
+										break;
+									case TWON_ONEVALUE:
+										itemType = ((pTW_ONEVALUE)_p)->ItemType;
+										contSize = sizeof(TW_ONEVALUE);
+										break;
+									case TWON_RANGE:
+										itemType = ((pTW_RANGE)_p)->ItemType;
+										contSize = sizeof(TW_RANGE);
+										break;
+									}
+
+									DSM::Unlock(&tw_entrypoint, tw_capability.hContainer);
+									DSM::Free(&tw_entrypoint, tw_capability.hContainer);
+
+									if (contSize)
+									{
+										tw_capability.hContainer = DSM::Alloc(&tw_entrypoint, contSize);
+
+										void *p = DSM::Lock(&tw_entrypoint, tw_capability.hContainer);
+
+										switch (tw_capability.ConType)
+										{
+										case TWON_ARRAY:
+
+											break;
+										case TWON_ENUMERATION:
+											((pTW_ENUMERATION)p)->ItemType = itemType;
+											((pTW_ENUMERATION)p)->NumItems = numItems;
+											break;
+										case TWON_ONEVALUE:
+											((pTW_ONEVALUE)p)->ItemType = itemType;
+											break;
+										case TWON_RANGE:
+											((pTW_RANGE)p)->ItemType = itemType;
+											break;
+										}
+
+										pTW_ENUMERATION pENUMERATION = (pTW_ENUMERATION)p;
+										pTW_ONEVALUE pONEVALUE = (pTW_ONEVALUE)p;
+										pTW_RANGE pRANGE = (pTW_RANGE)p;
+
+										double f_value = json_as_float(*i);
+										TW_BOOL b_value = json_as_bool(*i);
+										int i_value = json_get_cap_constant(*i, cap);
+										i_value = i_value ? i_value : json_as_int(*i);
+
+										switch (tw_capability.ConType)
+										{
+										case TWON_ARRAY:
+
+											break;
+
+										case TWON_ENUMERATION:
+											for (int i = 0; i < pENUMERATION->NumItems; ++i)
+											{
+												if (i_value == (pENUMERATION->ItemList)[i])
+												{
+													pENUMERATION->CurrentIndex = i;
+													break;
+												}
+											}
+											break;
+
+										case TWON_ONEVALUE:
+											switch (pONEVALUE->ItemType)
+											{
+											case TWTY_FIX32:
+											{
+												TW_INT32 value = (TW_INT32)(f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
+												TW_FIX32 tw_fix32;
+												tw_fix32.Whole = (TW_UINT16)(value >> 16);
+												tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
+												memcpy((void *)&pONEVALUE->Item, (const void *)&tw_fix32, sizeof(TW_FIX32));
+											}
+											break;
+											case TWTY_FRAME:
+											{
+												//not implemented!
+											}
+											break;
+											case TWTY_INT8:
+											{
+												TW_INT8 tw_int8 = (TW_INT8)i_value;
+												memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int8, sizeof(TW_INT8));
+											}
+											break;
+											case TWTY_INT16:
+											{
+												TW_INT16 tw_int16 = (TW_INT16)i_value;
+												memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int16, sizeof(TW_INT16));
+											}
+											break;
+											case TWTY_INT32:
+											{
+												TW_INT32 tw_int32 = (TW_INT32)i_value;
+												memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int32, sizeof(TW_INT32));
+											}
+											break;
+											case TWTY_UINT8:
+											{
+												TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
+												memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint8, sizeof(TW_UINT8));
+											}
+											break;
+											case TWTY_UINT16:
+											{
+												TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
+												memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint16, sizeof(TW_UINT16));
+											}
+											break;
+											case TWTY_UINT32:
+											{
+												TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
+												memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
+											}
+											break;
+											case TWTY_BOOL:
+											{
+												memcpy((void *)&pONEVALUE->Item, (const void *)&b_value, sizeof(TW_BOOL));
+											}
+											break;
+											case TWTY_STR32:
+											case TWTY_STR64:
+											case TWTY_STR128:
+											case TWTY_STR255:
+											{
+
+											}
+											break;
+											//					case TWTY_STR1024:
+											//					case TWTY_UNI512:
+											//						break;
+											default:
+												break;
+											}
+											break;
+
+										case TWON_RANGE:
+											switch (((pTW_RANGE)&tw_capability)->ItemType)
+											{
+											case TWTY_FIX32:
+											{
+												TW_INT32 value = (TW_INT32)(f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
+												TW_FIX32 tw_fix32;
+												tw_fix32.Whole = (TW_UINT16)(value >> 16);
+												tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
+												memcpy((void *)&((pTW_RANGE)&tw_capability)->CurrentValue, (const void *)&tw_fix32, sizeof(TW_FIX32));
+											}
+											break;
+											case TWTY_FRAME:
+											{
+												//not implemented!
+											}
+											break;
+											case TWTY_INT8:
+											{
+												TW_INT8 tw_int8 = (TW_INT8)i_value;
+												memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int8, sizeof(TW_INT8));
+											}
+											break;
+											case TWTY_INT16:
+											{
+												TW_INT16 tw_int16 = (TW_INT16)i_value;
+												memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int16, sizeof(TW_INT16));
+											}
+											break;
+											case TWTY_INT32:
+											{
+												TW_INT32 tw_int32 = (TW_INT32)i_value;
+												memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int32, sizeof(TW_INT32));
+											}
+											break;
+											case TWTY_UINT8:
+											{
+												TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
+												memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint8, sizeof(TW_UINT8));
+											}
+											break;
+											case TWTY_UINT16:
+											{
+												TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
+												memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint16, sizeof(TW_UINT16));
+											}
+											break;
+											case TWTY_UINT32:
+											{
+												TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
+												memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint32, sizeof(TW_UINT32));
+											}
+											break;
+											case TWTY_BOOL:
+											{
+												memcpy((void *)&pRANGE->CurrentValue, (const void *)&b_value, sizeof(TW_BOOL));
+											}
+											break;
+											case TWTY_STR32:
+											case TWTY_STR64:
+											case TWTY_STR128:
+											case TWTY_STR255:
+											{
+
+											}
+											break;
+											//					case TWTY_STR1024:
+											//					case TWTY_UNI512:
+											//						break;
+											default:
+												break;
+											}
+											break;
+
+										}
+
+										if (TWRC_SUCCESS == DSM_Entry(
+											&tw_identity,
+											&tw_source_identity,
+											DG_CONTROL,
+											DAT_CAPABILITY,
+											MSG_SET,
+											(TW_MEMREF)&tw_capability))
+										{
+
+										}
+										DSM::Unlock(&tw_entrypoint, tw_capability.hContainer);
+										DSM::Free(&tw_entrypoint, tw_capability.hContainer);
+									}
+
+								}
+
+							}
+
+
+						}
+						++i;
+					}
+				}
+			}
 			tw_ret = twain_source_enable(&tw_identity, &tw_source_identity, &tw_userinterface);
 			
 			if (tw_ret == TWRC_SUCCESS)
@@ -925,283 +1235,7 @@ void doScan(C_TEXT &Param1_scanner,
 				{
 					if (MSG_XFERREADY == tw_event.TWMessage)
 					{
-						if (option)
-						{
-							if (json_type(option) == JSON_NODE)
-							{
-								JSONNODE_ITERATOR i = json_begin(option);
-								while (i != json_end(option))
-								{
-									if (*i)
-									{
-										json_char *name = json_name(*i);
-										TW_UINT16 cap = json_get_cap(*i);
-										
-										TW_CAPABILITY tw_capability;
-										memset(&tw_capability, 0, sizeof(TW_CAPABILITY));
-										
-										tw_capability.Cap = cap;
-										tw_capability.ConType = 0;
-										tw_capability.hContainer = 0;
-										
-										/* find value type */
-										
-										if (TWRC_SUCCESS == DSM_Entry(
-																									&tw_identity,
-																									&tw_source_identity,
-																									DG_CONTROL,
-																									DAT_CAPABILITY,
-																									MSG_GET,
-																									(TW_MEMREF)&tw_capability))
-										{
-											TW_UINT16 itemType = 0;
-											TW_UINT32 numItems = 0;
-											TW_UINT32 contSize = 0;
-											
-											void *_p = DSM::Lock(&tw_entrypoint, tw_capability.hContainer);
-											
-											switch (tw_capability.ConType)
-											{
-												case TWON_ARRAY:
-													
-													break;
-												case TWON_ENUMERATION:
-													itemType = ((pTW_ENUMERATION)_p)->ItemType;
-													numItems = ((pTW_ENUMERATION)_p)->NumItems;
-													contSize = sizeof(TW_ENUMERATION) + (getSizeForItemType(itemType) * numItems);
-													break;
-												case TWON_ONEVALUE:
-													itemType = ((pTW_ONEVALUE)_p)->ItemType;
-													contSize = sizeof(TW_ONEVALUE);
-													break;
-												case TWON_RANGE:
-													itemType = ((pTW_RANGE)_p)->ItemType;
-													contSize = sizeof(TW_RANGE);
-													break;
-											}
-											
-											DSM::Unlock(&tw_entrypoint, tw_capability.hContainer);
-											DSM::Free(&tw_entrypoint, tw_capability.hContainer);
-											
-											if (contSize)
-											{
-												tw_capability.hContainer = DSM::Alloc(&tw_entrypoint, contSize);
-												
-												void *p = DSM::Lock(&tw_entrypoint, tw_capability.hContainer);
-												
-												switch (tw_capability.ConType)
-												{
-													case TWON_ARRAY:
-														
-														break;
-													case TWON_ENUMERATION:
-														((pTW_ENUMERATION)p)->ItemType = itemType;
-														((pTW_ENUMERATION)p)->NumItems = numItems;
-														break;
-													case TWON_ONEVALUE:
-														((pTW_ONEVALUE)p)->ItemType = itemType;
-														break;
-													case TWON_RANGE:
-														((pTW_RANGE)p)->ItemType = itemType;
-														break;
-												}
-												
-												pTW_ENUMERATION pENUMERATION = (pTW_ENUMERATION)p;
-												pTW_ONEVALUE pONEVALUE = (pTW_ONEVALUE)p;
-												pTW_RANGE pRANGE = (pTW_RANGE)p;
-												
-												double f_value = json_as_float(*i);
-												TW_BOOL b_value = json_as_bool(*i);
-												int i_value = json_get_cap_constant(*i, cap);
-												i_value = i_value ? i_value : json_as_int(*i);
-												
-												switch (tw_capability.ConType)
-												{
-													case TWON_ARRAY:
-														
-														break;
-														
-													case TWON_ENUMERATION:
-														for (int i = 0; i < pENUMERATION->NumItems; ++i)
-														{
-															if (i_value == (pENUMERATION->ItemList)[i])
-															{
-																pENUMERATION->CurrentIndex = i;
-																break;
-															}
-														}
-														break;
-														
-													case TWON_ONEVALUE:
-														switch (pONEVALUE->ItemType)
-													{
-														case TWTY_FIX32:
-														{
-															TW_INT32 value = (TW_INT32)(f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
-															TW_FIX32 tw_fix32;
-															tw_fix32.Whole = (TW_UINT16)(value >> 16);
-															tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
-															memcpy((void *)&pONEVALUE->Item, (const void *)&tw_fix32, sizeof(TW_FIX32));
-														}
-															break;
-														case TWTY_FRAME:
-														{
-															//not implemented!
-														}
-															break;
-														case TWTY_INT8:
-														{
-															TW_INT8 tw_int8 = (TW_INT8)i_value;
-															memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int8, sizeof(TW_INT8));
-														}
-															break;
-														case TWTY_INT16:
-														{
-															TW_INT16 tw_int16 = (TW_INT16)i_value;
-															memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int16, sizeof(TW_INT16));
-														}
-															break;
-														case TWTY_INT32:
-														{
-															TW_INT32 tw_int32 = (TW_INT32)i_value;
-															memcpy((void *)&pONEVALUE->Item, (const void *)&tw_int32, sizeof(TW_INT32));
-														}
-															break;
-														case TWTY_UINT8:
-														{
-															TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
-															memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint8, sizeof(TW_UINT8));
-														}
-															break;
-														case TWTY_UINT16:
-														{
-															TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
-															memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint16, sizeof(TW_UINT16));
-														}
-															break;
-														case TWTY_UINT32:
-														{
-															TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
-															memcpy((void *)&pONEVALUE->Item, (const void *)&tw_uint32, sizeof(TW_UINT32));
-														}
-															break;
-														case TWTY_BOOL:
-														{
-															memcpy((void *)&pONEVALUE->Item, (const void *)&b_value, sizeof(TW_BOOL));
-														}
-															break;
-														case TWTY_STR32:
-														case TWTY_STR64:
-														case TWTY_STR128:
-														case TWTY_STR255:
-														{
-															
-														}
-															break;
-															//					case TWTY_STR1024:
-															//					case TWTY_UNI512:
-															//						break;
-														default:
-															break;
-													}
-														break;
-														
-													case TWON_RANGE:
-														switch (((pTW_RANGE)&tw_capability)->ItemType)
-													{
-														case TWTY_FIX32:
-														{
-															TW_INT32 value = (TW_INT32)(f_value * 65536.0 + ((f_value < 0) ? (-0.5) : 0.5));
-															TW_FIX32 tw_fix32;
-															tw_fix32.Whole = (TW_UINT16)(value >> 16);
-															tw_fix32.Frac = (TW_UINT16)(value & 0x0000ffffL);
-															memcpy((void *)&((pTW_RANGE)&tw_capability)->CurrentValue, (const void *)&tw_fix32, sizeof(TW_FIX32));
-														}
-															break;
-														case TWTY_FRAME:
-														{
-															//not implemented!
-														}
-															break;
-														case TWTY_INT8:
-														{
-															TW_INT8 tw_int8 = (TW_INT8)i_value;
-															memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int8, sizeof(TW_INT8));
-														}
-															break;
-														case TWTY_INT16:
-														{
-															TW_INT16 tw_int16 = (TW_INT16)i_value;
-															memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int16, sizeof(TW_INT16));
-														}
-															break;
-														case TWTY_INT32:
-														{
-															TW_INT32 tw_int32 = (TW_INT32)i_value;
-															memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_int32, sizeof(TW_INT32));
-														}
-															break;
-														case TWTY_UINT8:
-														{
-															TW_UINT8 tw_uint8 = (TW_UINT8)i_value;
-															memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint8, sizeof(TW_UINT8));
-														}
-															break;
-														case TWTY_UINT16:
-														{
-															TW_UINT16 tw_uint16 = (TW_UINT16)i_value;
-															memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint16, sizeof(TW_UINT16));
-														}
-															break;
-														case TWTY_UINT32:
-														{
-															TW_UINT32 tw_uint32 = (TW_UINT32)i_value;
-															memcpy((void *)&pRANGE->CurrentValue, (const void *)&tw_uint32, sizeof(TW_UINT32));
-														}
-															break;
-														case TWTY_BOOL:
-														{
-															memcpy((void *)&pRANGE->CurrentValue, (const void *)&b_value, sizeof(TW_BOOL));
-														}
-															break;
-														case TWTY_STR32:
-														case TWTY_STR64:
-														case TWTY_STR128:
-														case TWTY_STR255:
-														{
-															
-														}
-															break;
-															//					case TWTY_STR1024:
-															//					case TWTY_UNI512:
-															//						break;
-														default:
-															break;
-													}
-														break;
-														
-												}
-												
-												if (TWRC_SUCCESS == DSM_Entry(
-																											&tw_identity,
-																											&tw_source_identity,
-																											DG_CONTROL,
-																											DAT_CAPABILITY,
-																											MSG_SET,
-																											(TW_MEMREF)&tw_capability))
-												{
-													
-												}
-												DSM::Unlock(&tw_entrypoint, tw_capability.hContainer);
-												DSM::Free(&tw_entrypoint, tw_capability.hContainer);
-											}
-											
-										}
-									}
-									++i;
-								}
-							}
-						}
+
 						
 						//scan context
 						TW_SETUPMEMXFER tw_setup_mem_xfer;
@@ -1396,6 +1430,15 @@ void doScan(C_TEXT &Param1_scanner,
 																						 dpi_y);
 														}
 															break;
+														default:
+														{
+															size_t outbuffersize = data.getBytesLength();
+															unsigned char *outbuffer = (unsigned char *)data.getBytesPtr();
+															picture.addBytes((const uint8_t *)&outbuffersize, sizeof(outbuffersize));
+															picture.addBytes((const uint8_t *)outbuffer, (unsigned int)outbuffersize);
+														}
+														break;
+
 													}//switch
 													
 												}

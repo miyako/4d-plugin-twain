@@ -32,7 +32,7 @@ extern "C" {
 															void *_entrypoint,
 															JSONNODE *json_scanner_options);
 	
-	TW_UINT16 json_get_cap(JSONNODE *n);
+	TW_UINT16 json_get_cap(json_char *n);
 	int json_get_cap_constant(JSONNODE *n, TW_UINT16 cap);
 	int getSizeForItemType(TW_UINT16 itemType);
 	
