@@ -5,6 +5,8 @@
 
 ``TWAIN.framework`` is used for macOS. see also [4d-plugin-ica](https://github.com/miyako/4d-plugin-ica).
 
+* Remarks: some drivers support various image file formats via file transfer. this feature is not supported. ``JPG`` and ``PNG`` are created by the plugin from bitmap data.
+
 ### Platform
 
 | carbon | cocoa | win32 | win64 |
@@ -14,6 +16,10 @@
 ### Version
 
 <img src="https://cloud.githubusercontent.com/assets/1725068/18940649/21945000-8645-11e6-86ed-4a0f800e5a73.png" width="32" height="32" /> <img src="https://cloud.githubusercontent.com/assets/1725068/18940648/2192ddba-8645-11e6-864d-6d5692d55717.png" width="32" height="32" />
+
+### Releases
+
+[2.0](https://github.com/miyako/4d-plugin-twain/releases/tag/2.0)
 
 ## Syntax
 
@@ -54,7 +60,7 @@ setting|TEXT|``JSON``
 
 only features included in ``CAP_SUPPORTEDCAPS`` are returned. ``setting`` is the current setting. ``description`` explains valid values for each feature.
 
-empty string specified the default scanner.
+empty string specifies the default scanner.
 
 on windows the call is executed in a new thread with [``_beginthreadex``](https://msdn.microsoft.com/en-us/library/kdzttdcb.aspx)
 
@@ -73,7 +79,7 @@ images|ARRAY PICTURE|
 
 for efficiency, pass a subset of the setting object that contains properties that are different from the default values.
 
-empty string specified the default scanner.
+empty string specifies the default scanner.
 
 on windows the call is executed in a new thread with [``_beginthreadex``](https://msdn.microsoft.com/en-us/library/kdzttdcb.aspx)
 
