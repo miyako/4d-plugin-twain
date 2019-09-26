@@ -19,7 +19,7 @@
 
 ### Releases
 
-[2.0](https://github.com/miyako/4d-plugin-twain/releases/tag/2.0)
+[2.1](https://github.com/miyako/4d-plugin-twain/releases/tag/2.1)
 
 ## Syntax
 
