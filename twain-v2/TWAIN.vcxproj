@@ -277,7 +277,7 @@
       <ModuleDefinitionFile>.\4D Plugin API\4DPluginAPI.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>lib\VC14\64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>lib\VC14\64;lib\VC14\64\debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>Rpcrt4.lib;libjson.lib;twaindsm.lib;libz.lib;libpng.lib;libjpeg.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

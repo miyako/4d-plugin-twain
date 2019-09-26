@@ -100,7 +100,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			JyZvIUU38WtG8pewz2AZypfM1/0=
+			ScGVXpBen83W4OXBOrOdzhpBLLk=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -380,11 +380,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			JyZvIUU38WtG8pewz2AZypfM1/0=
+			ScGVXpBen83W4OXBOrOdzhpBLLk=
 			</data>
 			<key>hash2</key>
 			<data>
-			TLxOHIPmtL1qPZIfjZgETgIMbp3qZZB76WPGkAcipoE=
+			duwxFHYar/FlEzWF9xn1hRARIjkzCBHbIBFSU7ql3r4=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -404,32 +404,32 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Cfn/K8ZrcidEW5TH9BsLxrLk6Cc=
+			vLr2y3dwFTmnYyA5noijv/qjfBE=
 			</data>
 			<key>hash2</key>
 			<data>
-			zq/hCmaqMjsHbcfmh1oeqL4dEGnb3nRj2KXFhRxd7GU=
+			wu9plEc6Q+zgtdu/W+QxzWsgEdQ80PXrLgVazyBadPM=
 			</data>
 		</dict>
 		<key>Windows64/TWAIN.4DX</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			w6o0dkb75Nk1q0h+mq5sNWzZ6JA=
+			zNLb+tqu9SUu0imeiDZpzYLcC7g=
 			</data>
 			<key>hash2</key>
 			<data>
-			1Yu2TSCvtoiEopvOuLCKQNg9snMVb7qgAtNYKqUGntg=
+			3usgpq7J9j+b0SGt4kd+47wn4ZBJ+g3YZ7/g95NnxLE=
 			</data>
 		</dict>
 		<key>manifest.json</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			fKjmjWJAy8aKcUmVLCxh/3xvOJM=
+			Op2Vyv9NeCTU3/qaMPdfjq7pHFw=
 			</data>
 			<key>requirement</key>
-			<string>identifier manifest and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = Y69CWUC25B</string>
+			<string>identifier manifest and anchor apple generic and certificate leaf[subject.CN] = "Mac Developer: keisuke miyako (4W9UT59D3B)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
 		</dict>
 	</dict>
 	<key>rules</key>
@@ -449,6 +449,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Resources/Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^version.plist$</key>
 		<true/>
@@ -508,6 +513,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Resources/Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^[^/]+$</key>
 		<dict>

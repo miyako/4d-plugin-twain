@@ -1,1 +1,1 @@
-﻿/* Localized versions of Info.plist keys */CFBundleName = "TWAIN";CFBundleShortVersionString = "2.0";CFBundleGetInfoString = "TWAIN version 2.0, Copyright 2017 miyako.";
+/* Localized versions of Info.plist keys */CFBundleName = "TWAIN";CFBundleShortVersionString = "2.1";CFBundleGetInfoString = "TWAIN version 2.1, Copyright 2019 miyako.";

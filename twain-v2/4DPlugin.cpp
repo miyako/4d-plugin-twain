@@ -242,14 +242,14 @@ HANDLE createFmIn1(C_TEXT& Param1_scanner, C_TEXT& Param2_option,
 				unsigned char *p = (unsigned char *)bufIn;
 				
 				CopyMemory(p, ParamA_len, sizeof(DWORD));
-				p += sizeof(ParamA_len);
+				p += sizeof(DWORD);
 				CopyMemory(p, ParamB_len, sizeof(DWORD));
-				p += sizeof(ParamB_len);
+				p += sizeof(DWORD);
 				
 				CopyMemory(p, Param1_len, sizeof(DWORD));
-				p += sizeof(Param1_len);
+				p += sizeof(DWORD);
 				CopyMemory(p, Param2_len, sizeof(DWORD));
-				p += sizeof(Param2_len);
+				p += sizeof(DWORD);
 				
 				CopyMemory(p, ParamA.c_str(), *ParamA_len);
 				p += (*ParamA_len);
@@ -403,7 +403,7 @@ HANDLE createFmOut2(C_BLOB* data)
 {
 	DWORD data_len = data->getBytesLength();
 	
-	DWORD len = sizeof(data_len) + data_len;
+	DWORD len = sizeof(DWORD) + data_len;
 	
 	HANDLE fmOut = CreateFileMapping(
 																	 INVALID_HANDLE_VALUE,
@@ -419,8 +419,8 @@ HANDLE createFmOut2(C_BLOB* data)
 			unsigned char *p = (unsigned char *)bufOut;
 			try
 			{
-				CopyMemory(p, &data_len, sizeof(data_len));
-				p += sizeof(data_len);
+				CopyMemory(p, &data_len, sizeof(DWORD));
+				p += sizeof(DWORD);
 				if (data_len)
 				{
 					CopyMemory(p, (void *)data->getBytesPtr(), data_len);
@@ -442,7 +442,7 @@ HANDLE createFmOut2(C_BLOB* data)
 void getDataFromThread2(C_BLOB& data)
 {
 	DWORD data_len = 0;
-	DWORD len = sizeof(data_len);
+	DWORD len = sizeof(DWORD);
 	
 	BOOL success = FALSE;
 	
@@ -460,7 +460,7 @@ void getDataFromThread2(C_BLOB& data)
 			unsigned char *p = (unsigned char *)bufOut;
 			try
 			{
-				CopyMemory(&data_len, p, sizeof(data_len));
+				CopyMemory(&data_len, p, sizeof(DWORD));
 				success = TRUE;
 			}
 			catch (...)
@@ -487,7 +487,7 @@ void getDataFromThread2(C_BLOB& data)
 			if (bufOut)
 			{
 				unsigned char *p = (unsigned char *)bufOut;
-				p = p + sizeof(data_len);
+				p = p + sizeof(DWORD);
 				try
 				{
 					std::vector<uint8_t>buf(data_len);
