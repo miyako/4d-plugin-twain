@@ -1,6 +1,10 @@
 # 4d-plugin-twain
 [TWAIN](http://www.twain.org) client for Windows and macOS
 
+![obsolete-word-black-frame-word-obsolete-word-black-frame-d-rendering-123942590](https://user-images.githubusercontent.com/1725068/78463940-29122280-771e-11ea-8be8-a7830725403e.jpg)
+
+USe [4d-plugin-twain-v2](https://github.com/miyako/4d-plugin-twain-v2)
+
 [twain-dsm](https://github.com/twain/twain-dsm) is used for Windows. (native ``TWAIN_32.DLL``is 32-bit only)
 
 ``TWAIN.framework`` is used for macOS. see also [4d-plugin-ica](https://github.com/miyako/4d-plugin-ica).
